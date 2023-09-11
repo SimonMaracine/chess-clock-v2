@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "state_startup.hpp"
 #include "definitions.hpp"
 #include "other.hpp"
@@ -31,8 +33,12 @@ void StateStartup::update()
       toggle_light(!on, LEFT_LED);
   });
 
+  static const char* show = (
+    analogRead(A5) % 2 == 0 ? "By Tudor & Simon" : "By Simon & Tudor"
+  );
+
   ctx->lcd.setCursor(0, 0);
   ctx->lcd.print("Chess Clock v1.0");
   ctx->lcd.setCursor(0, 1);
-  ctx->lcd.print("By Tudor & Simon");
+  ctx->lcd.print(show);
 }
