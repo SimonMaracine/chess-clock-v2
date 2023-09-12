@@ -36,6 +36,10 @@ struct Context
     size_t count = 0;
   } state;
 
-  Menu menu = Menu::Mode;
+  Menu menu = Menu::Modes;
   Mode mode = Mode::TwoClockUp;
+
+  TimeMode time_mode = TimeMode::Minutes;
+  unsigned long time_limit = THIRTY_MINUTES_D;  // Deciseconds
+  bool show_deciseconds = false;
 };

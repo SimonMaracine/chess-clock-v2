@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "state_startup.hpp"
+#include "all_states.hpp"
 #include "definitions.hpp"
 #include "other.hpp"
 
@@ -38,7 +38,7 @@ void StateStartup::update()
   );
 
   ctx->lcd.setCursor(0, 0);
-  ctx->lcd.print("Chess Clock v1.0");
+  ctx->lcd.print("Chess Clock v2.0");
   ctx->lcd.setCursor(0, 1);
   ctx->lcd.print(show);
 }

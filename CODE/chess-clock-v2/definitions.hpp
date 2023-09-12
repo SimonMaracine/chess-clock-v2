@@ -29,12 +29,15 @@ enum ButtonList
 enum StateList
 {
   StartupState,
-  MenuState
+  MenuState,
+  ModesState,
+  TimeState,
+  PreTimeState
 };
 
 enum class Menu
 {
-  Mode = 2,
+  Modes = 2,
   Time = 6,
   Deciseconds = 10,
   Start = 14
@@ -47,6 +50,12 @@ enum class Mode
   OneClockUp,
   OneClockDown,
   Dice
+};
+
+enum class TimeMode
+{
+  Minutes,
+  Seconds
 };
 
 // Defined in deciseconds

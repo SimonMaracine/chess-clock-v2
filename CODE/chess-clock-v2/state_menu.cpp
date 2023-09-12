@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "state_menu.hpp"
+#include "all_states.hpp"
 #include "definitions.hpp"
 #include "other.hpp"
 #include "characters.hpp"
@@ -17,7 +17,7 @@ void StateMenu::update()
     ctx->lcd.setCursor(static_cast<int>(ctx->menu), 1);
     ctx->lcd.print(' ');
 
-    if (ctx->menu == Menu::Mode)
+    if (ctx->menu == Menu::Modes)
     {
       ctx->menu = Menu::Start;
     }
@@ -33,7 +33,7 @@ void StateMenu::update()
 
     if (ctx->menu == Menu::Start)
     {
-      ctx->menu = Menu::Mode;
+      ctx->menu = Menu::Modes;
     }
     else
     {
@@ -44,13 +44,15 @@ void StateMenu::update()
   {
     switch (ctx->menu)
     {
-      case Menu::Mode:
-        // ctx->change_state()
-        // CHANGE_MODE(mode_modes)
+      case Menu::Modes:
+        ctx->change_state(ModesState);
+        break;
       case Menu::Time:
-        // CHANGE_MODE(mode_submenu_time)
+        ctx->change_state(PreTimeState);
+        break;
       case Menu::Deciseconds:
         // CHANGE_MODE(mode_deciseconds)
+        break;
       case Menu::Start:
         switch (ctx->mode)
         {

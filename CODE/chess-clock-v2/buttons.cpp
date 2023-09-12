@@ -28,3 +28,9 @@ bool Buttons::is_button_pressed(size_t button) const
 
   return state.currently_pressed && !state.previously_pressed;
 }
+
+bool Buttons::is_button_down(size_t button) const {
+  const Button state = buttons[button];
+
+  return state.currently_pressed;
+}

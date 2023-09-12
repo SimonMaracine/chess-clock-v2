@@ -1,6 +1,5 @@
 #include "context.hpp"
-#include "state_startup.hpp"
-#include "state_menu.hpp"
+#include "all_states.hpp"
 
 static Context ctx;
 
@@ -11,9 +10,15 @@ void setup()
   // Allocate all states
   StateStartup startup {&ctx};
   StateMenu menu {&ctx};
+  StateModes modes {&ctx};
+  StateTime time {&ctx};
+  StatePreTime pre_time {&ctx};
 
   ctx.add_state(&startup);
   ctx.add_state(&menu);
+  ctx.add_state(&modes);
+  ctx.add_state(&time);
+  ctx.add_state(&pre_time);
 
   ctx.add_button(LEFT_PLAYER_BUTTON);
   ctx.add_button(RIGHT_PLAYER_BUTTON);
