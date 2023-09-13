@@ -1,4 +1,5 @@
 #include "context.hpp"
+#include "definitions.hpp"
 #include "all_states.hpp"
 
 static Context ctx;
@@ -13,12 +14,16 @@ void setup()
   StateModes modes {&ctx};
   StateTime time {&ctx};
   StatePreTime pre_time {&ctx};
+  StateDeciseconds deciseconds {&ctx};
+  StateTwoClockUp two_clock_up {&ctx};
 
   ctx.add_state(&startup);
   ctx.add_state(&menu);
   ctx.add_state(&modes);
   ctx.add_state(&time);
   ctx.add_state(&pre_time);
+  ctx.add_state(&deciseconds);
+  ctx.add_state(&two_clock_up);
 
   ctx.add_button(LEFT_PLAYER_BUTTON);
   ctx.add_button(RIGHT_PLAYER_BUTTON);
@@ -27,6 +32,10 @@ void setup()
   ctx.add_button(OK_BUTTON);
 
   ctx.initialize(&startup);
+
+  pinMode(BUZZER, OUTPUT);
+  pinMode(LEFT_LED, OUTPUT);
+  pinMode(RIGHT_LED, OUTPUT);
 }
 
 void loop()

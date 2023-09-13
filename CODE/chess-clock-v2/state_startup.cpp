@@ -6,7 +6,7 @@
 
 void StateStartup::start()
 {
-
+  timer.reset();
 }
 
 void StateStartup::update()
@@ -21,17 +21,18 @@ void StateStartup::update()
 
   if (ok)
   {
-      toggle_light(false, RIGHT_LED);
-      toggle_light(false, LEFT_LED);
+      toggle_light(RIGHT_LED, false);
+      toggle_light(LEFT_LED, false);
       ctx->change_state(MenuState);
   }
 
-  do_every(ONE_SECOND_M, ctx, [](Context*) {
-      static bool on = true;
-      on = !on;
-      toggle_light(on, RIGHT_LED);
-      toggle_light(!on, LEFT_LED);
-  });
+  if (timer.tick())
+  {
+    static bool on = true;
+    on = !on;
+    toggle_light(RIGHT_LED, on);
+    toggle_light(LEFT_LED, !on);
+  }
 
   static const char* show = (
     analogRead(A5) % 2 == 0 ? "By Tudor & Simon" : "By Simon & Tudor"

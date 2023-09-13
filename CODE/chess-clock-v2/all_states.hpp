@@ -2,19 +2,22 @@
 
 #include "state.hpp"
 #include "context.hpp"
-
-struct StateMenu : State
-{
-  StateMenu(Context* ctx)
-    : State(ctx) {}
-
-  virtual void start() override;
-  virtual void update() override;
-};
+#include "other.hpp"
 
 struct StateStartup : State
 {
   StateStartup(Context* ctx)
+    : State(ctx) {}
+
+  virtual void start() override;
+  virtual void update() override;
+
+  Timer timer {ONE_SECOND_M};
+};
+
+struct StateMenu : State
+{
+  StateMenu(Context* ctx)
     : State(ctx) {}
 
   virtual void start() override;
@@ -46,4 +49,26 @@ struct StatePreTime : State
 
   virtual void start() override;
   virtual void update() override;
+};
+
+struct StateDeciseconds : State
+{
+  StateDeciseconds(Context* ctx)
+    : State(ctx) {}
+
+  virtual void start() override;
+  virtual void update() override;
+};
+
+struct StateTwoClockUp : State
+{
+  StateTwoClockUp(Context* ctx)
+    : State(ctx) {}
+
+  virtual void start() override;
+  virtual void update() override;
+
+  Timer timer {ONE_DECISECOND_M};
+  Timer end_timer {TWO_DECISECONDS_M};
+  Match match;
 };

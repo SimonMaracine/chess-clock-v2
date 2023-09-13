@@ -51,15 +51,13 @@ void StateMenu::update()
         ctx->change_state(PreTimeState);
         break;
       case Menu::Deciseconds:
-        // CHANGE_MODE(mode_deciseconds)
+        ctx->change_state(DecisecondsState);
         break;
       case Menu::Start:
         switch (ctx->mode)
         {
           case Mode::TwoClockUp:
-            // setup_two_clock_up();
-            // make_sound(START_MELODY, 4);
-            // CHANGE_MODE(mode_two_clock_up)
+            ctx->change_state(TwoClockUpState);
             break;
           case Mode::TwoClockDown:
             // setup_two_clock_down();

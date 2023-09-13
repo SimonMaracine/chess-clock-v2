@@ -66,7 +66,7 @@ void StateModes::update()
   }
 
   ctx->lcd.setCursor(0, 0);
-  ctx->lcd.print("Set game mode:");
+  ctx->lcd.print("Set mode:");
 
   ctx->lcd.setCursor(0, 1);
   switch (ctx->mode)
