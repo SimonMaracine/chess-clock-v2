@@ -4,10 +4,10 @@
 #include "characters.hpp"
 #include "melodies.hpp"
 
-void StateTwoClockUp::start()
+void StateTwoClockDown::start()
 {
-  match.left_player_time = 0;
-  match.right_player_time = 0;
+  match.left_player_time = ctx->time_limit;
+  match.right_player_time = ctx->time_limit;
 
   match.player = Player::Right;
 
@@ -21,13 +21,13 @@ void StateTwoClockUp::start()
   timer.reset();
 }
 
-void StateTwoClockUp::stop()
+void StateTwoClockDown::stop()
 {
   toggle_light(RIGHT_LED, false);
   toggle_light(LEFT_LED, false);
 }
 
-void StateTwoClockUp::update()
+void StateTwoClockDown::update()
 {
   if (ctx->buttons.is_button_pressed(StartStopButton) && !match.ended)
   {
@@ -64,15 +64,15 @@ void StateTwoClockUp::update()
       switch (match.player)
       {
         case Player::Left:
-          match.left_player_time++;
+          match.left_player_time--;
           break;
         case Player::Right:
-          match.right_player_time++;
+          match.right_player_time--;
           break;
       }
 
-      if (match.left_player_time == ctx->time_limit ||
-        match.right_player_time == ctx->time_limit)
+      if (match.left_player_time == 0 ||
+          match.right_player_time == 0)
       {
         match.ended = true;
         match.end_flag = true;

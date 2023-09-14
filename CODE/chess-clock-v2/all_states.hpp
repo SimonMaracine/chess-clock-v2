@@ -69,3 +69,45 @@ struct StateTwoClockUp : State
   Timer end_timer {TWO_DECISECONDS_M};
   Match match;
 };
+
+struct StateTwoClockDown : State
+{
+  StateTwoClockDown(Context* ctx)
+    : State(ctx) {}
+
+  virtual void start() override;
+  virtual void stop() override;
+  virtual void update() override;
+
+  Timer timer {ONE_DECISECOND_M};
+  Timer end_timer {TWO_DECISECONDS_M};
+  Match match;
+};
+
+struct StateOneClockUp : State
+{
+  StateOneClockUp(Context* ctx)
+    : State(ctx) {}
+
+  virtual void start() override;
+  virtual void stop() override;
+  virtual void update() override;
+
+  Timer timer {ONE_DECISECOND_M};
+  Timer end_timer {TWO_DECISECONDS_M};
+  MatchOneTimer match;
+};
+
+struct StateOneClockDown : State
+{
+  StateOneClockDown(Context* ctx)
+    : State(ctx) {}
+
+  virtual void start() override;
+  virtual void stop() override;
+  virtual void update() override;
+
+  Timer timer {ONE_DECISECOND_M};
+  Timer end_timer {TWO_DECISECONDS_M};
+  MatchOneTimer match;
+};

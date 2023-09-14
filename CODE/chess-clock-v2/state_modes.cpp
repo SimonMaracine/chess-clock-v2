@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 #include "all_states.hpp"
 #include "definitions.hpp"
 #include "other.hpp"

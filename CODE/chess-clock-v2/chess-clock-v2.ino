@@ -16,6 +16,9 @@ void setup()
   StatePreTime pre_time {&ctx};
   StateDeciseconds deciseconds {&ctx};
   StateTwoClockUp two_clock_up {&ctx};
+  StateTwoClockDown two_clock_down {&ctx};
+  StateOneClockUp one_clock_up {&ctx};
+  StateOneClockDown one_clock_down {&ctx};
 
   ctx.add_state(&startup);
   ctx.add_state(&menu);
@@ -24,6 +27,9 @@ void setup()
   ctx.add_state(&pre_time);
   ctx.add_state(&deciseconds);
   ctx.add_state(&two_clock_up);
+  ctx.add_state(&two_clock_down);
+  ctx.add_state(&one_clock_up);
+  ctx.add_state(&one_clock_down);
 
   ctx.add_button(LEFT_PLAYER_BUTTON);
   ctx.add_button(RIGHT_PLAYER_BUTTON);

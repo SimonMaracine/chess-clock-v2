@@ -34,7 +34,10 @@ enum StateList
   TimeState,
   PreTimeState,
   DecisecondsState,
-  TwoClockUpState
+  TwoClockUpState,
+  TwoClockDownState,
+  OneClockUpState,
+  OneClockDownState
 };
 
 enum class Menu
@@ -86,6 +89,15 @@ struct Match
 
   unsigned long left_player_time = 0;  // Deciseconds
   unsigned long right_player_time = 0;
+
+  bool paused = true;
+  bool ended = false;
+  bool end_flag = false;  // One time flag
+};
+
+struct MatchOneTimer
+{
+  unsigned long time = 0;  // Deciseconds
 
   bool paused = true;
   bool ended = false;

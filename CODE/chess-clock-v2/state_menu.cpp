@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 #include "all_states.hpp"
 #include "definitions.hpp"
 #include "other.hpp"
@@ -55,19 +53,13 @@ void StateMenu::update()
             ctx->change_state(TwoClockUpState);
             break;
           case Mode::TwoClockDown:
-            // setup_two_clock_down();
-            // make_sound(START_MELODY, 4);
-            // CHANGE_MODE(mode_two_clock_down)
+            ctx->change_state(TwoClockDownState);
             break;
           case Mode::OneClockUp:
-            // setup_one_clock_up();
-            // make_sound(START_MELODY, 4);
-            // CHANGE_MODE(mode_one_clock_up)
+            ctx->change_state(OneClockUpState);
             break;
           case Mode::OneClockDown:
-            // setup_one_clock_down();
-            // make_sound(START_MELODY, 4);
-            // CHANGE_MODE(mode_one_clock_down)  
+            ctx->change_state(OneClockDownState);
             break;
           case Mode::Dice:
             // setup_dice();

@@ -44,9 +44,17 @@ struct Timer
   unsigned long last_time = 0;
 };
 
+enum class Monotony
+{
+  Ascend,
+  Descend
+};
+
 void toggle_light(int light, bool on);
 void play_sound(const Note* notes, size_t size);
 void display_time(LiquidCrystal& lcd, unsigned long player_time, Player player, bool show_deciseconds);
+void display_time_one(LiquidCrystal& lcd, unsigned long time, bool show_deciseconds);
+void display_progress_bar(LiquidCrystal& lcd, unsigned long time, unsigned long time_limit, Monotony monotony);
 
 template<size_t Size>
 void play_melody(const Melody<Size>& melody)
