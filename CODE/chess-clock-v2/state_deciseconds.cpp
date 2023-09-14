@@ -4,11 +4,6 @@
 #include "definitions.hpp"
 #include "other.hpp"
 
-void StateDeciseconds::start()
-{
-
-}
-
 void StateDeciseconds::update()
 {
   if (ctx->buttons.is_button_pressed(LeftPlayerButton))

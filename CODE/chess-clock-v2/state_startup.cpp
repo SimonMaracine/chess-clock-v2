@@ -9,6 +9,12 @@ void StateStartup::start()
   timer.reset();
 }
 
+void StateStartup::stop()
+{
+  toggle_light(RIGHT_LED, false);
+  toggle_light(LEFT_LED, false);
+}
+
 void StateStartup::update()
 {
   const bool ok = (
@@ -21,9 +27,7 @@ void StateStartup::update()
 
   if (ok)
   {
-      toggle_light(RIGHT_LED, false);
-      toggle_light(LEFT_LED, false);
-      ctx->change_state(MenuState);
+    ctx->change_state(MenuState);
   }
 
   if (timer.tick())

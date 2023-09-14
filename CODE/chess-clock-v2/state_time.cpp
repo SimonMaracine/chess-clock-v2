@@ -4,11 +4,6 @@
 #include "definitions.hpp"
 #include "other.hpp"
 
-void StateTime::start()
-{
-
-}
-
 void StateTime::update()
 {
   unsigned long lower_limit;

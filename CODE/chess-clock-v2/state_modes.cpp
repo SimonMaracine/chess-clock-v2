@@ -5,11 +5,6 @@
 #include "other.hpp"
 #include "characters.hpp"
 
-void StateModes::start()
-{
-
-}
-
 void StateModes::update()
 {
   if (ctx->buttons.is_button_pressed(LeftPlayerButton))

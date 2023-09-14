@@ -9,7 +9,8 @@ struct State
 
   virtual ~State() = default;
 
-  virtual void start() = 0;
+  virtual void start() {}
+  virtual void stop() {}
   virtual void update() = 0;
 
   Context* ctx = nullptr;

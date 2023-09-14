@@ -5,11 +5,6 @@
 #include "other.hpp"
 #include "characters.hpp"
 
-void StateMenu::start()
-{
-
-}
-
 void StateMenu::update()
 {
   if (ctx->buttons.is_button_pressed(LeftPlayerButton))

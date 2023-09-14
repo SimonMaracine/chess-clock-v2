@@ -4,11 +4,6 @@
 #include "definitions.hpp"
 #include "other.hpp"
 
-void StatePreTime::start()
-{
-
-}
-
 void StatePreTime::update()
 {
   if (ctx->buttons.is_button_pressed(LeftPlayerButton) ||

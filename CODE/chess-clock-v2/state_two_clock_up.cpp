@@ -23,6 +23,12 @@ void StateTwoClockUp::start()
   timer.reset();
 }
 
+void StateTwoClockUp::stop()
+{
+  toggle_light(RIGHT_LED, false);
+  toggle_light(LEFT_LED, false);
+}
+
 void StateTwoClockUp::update()
 {
   if (ctx->buttons.is_button_pressed(StartStopButton) && !match.ended)
@@ -73,9 +79,6 @@ void StateTwoClockUp::update()
 
   if (ctx->buttons.is_button_pressed(SoftResetButton))
   {
-    toggle_light(RIGHT_LED, true);
-    toggle_light(LEFT_LED, true);
-
     ctx->change_state(MenuState);
   }
 

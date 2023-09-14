@@ -31,6 +31,7 @@ void Context::update()
   if (state.changed_state)
   {
     lcd.clear();
+    this->state.current->stop();
     this->state.current = this->state.next;
     this->state.current->start();
 
