@@ -35,7 +35,7 @@ void StatePreTime::update()
 
     ctx->lcd.setCursor(0, 0);
     ctx->lcd.print("Set time in:");
-    
+
     ctx->lcd.setCursor(0, 1);
     switch (ctx->time_mode)
     {

@@ -14,7 +14,7 @@ void StateMenu::update()
 
         ctx->menu = wrapped_subtract(ctx->menu, Menu::MenuCount);
     }
-    
+
     if (ctx->buttons.is_button_pressed(RightPlayerButton))
     {
         ctx->lcd.setCursor(MENU_CURSOR[static_cast<size_t>(ctx->menu)], 1);
@@ -22,7 +22,7 @@ void StateMenu::update()
 
         ctx->menu = wrapped_add(ctx->menu, Menu::MenuCount);
     }
-    
+
     if (ctx->buttons.is_button_pressed(OkButton))
     {
         switch (ctx->menu)

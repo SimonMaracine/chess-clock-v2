@@ -78,7 +78,7 @@ void StateOneClockDown::update()
         ctx->lcd.setCursor(2, 1);
         ctx->lcd.print(' ');
     }
-    
+
     display_time_one(ctx->lcd, match.time, ctx->show_deciseconds);
 
     display_progress_bar(ctx->lcd, match.time, ctx->time_limit, Monotony::Descend);

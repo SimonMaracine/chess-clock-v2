@@ -86,7 +86,7 @@ enum class Player
 #define NINETY_MINUTES_D 54000
 #define THIRTY_MINUTES_D 18000
 #define THREE_MINUTES_D 1800
-#define ONE_MINUTE_D 600 
+#define ONE_MINUTE_D 600
 #define ONE_SECOND_D 10
 
 // Defined in milliseconds

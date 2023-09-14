@@ -125,7 +125,7 @@ void StateTwoClockUp::update()
         case Player::Right:
             ctx->lcd.setCursor(3, 0);
             ctx->lcd.print(' ');
-        
+
             ctx->lcd.setCursor(12, 0);
             ctx->lcd.write(TurnIndicator);
 

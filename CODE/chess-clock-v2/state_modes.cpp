@@ -9,12 +9,12 @@ void StateModes::update()
     {
         ctx->mode = wrapped_subtract(ctx->mode, Mode::ModeCount);
     }
-    
+
     if (ctx->buttons.is_button_pressed(RightPlayerButton))
     {
         ctx->mode = wrapped_add(ctx->mode, Mode::ModeCount);
     }
-    
+
     if (ctx->buttons.is_button_pressed(OkButton))
     {
         ctx->change_state(MenuState);

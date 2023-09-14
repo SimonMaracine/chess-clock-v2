@@ -8,17 +8,17 @@ void StateDeciseconds::update()
     {
         ctx->show_deciseconds = !ctx->show_deciseconds;
     }
-    
+
     if (ctx->buttons.is_button_pressed(RightPlayerButton))
     {
         ctx->show_deciseconds = !ctx->show_deciseconds;
     }
-    
+
     if (ctx->buttons.is_button_pressed(OkButton))
     {
         ctx->change_state(MenuState);
     }
-    
+
     ctx->lcd.setCursor(0, 0);
     ctx->lcd.print("Show fractions:");
 
