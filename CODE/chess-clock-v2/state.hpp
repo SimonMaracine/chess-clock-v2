@@ -4,14 +4,14 @@ struct Context;
 
 struct State
 {
-  State(Context* ctx)
-    : ctx(ctx) {}
+    State(Context* ctx)
+        : ctx(ctx) {}
 
-  virtual ~State() = default;
+    virtual ~State() = default;
 
-  virtual void start() {}
-  virtual void stop() {}
-  virtual void update() = 0;
+    virtual void start() {}
+    virtual void stop() {}
+    virtual void update() = 0;
 
-  Context* ctx = nullptr;
+    Context* ctx = nullptr;
 };

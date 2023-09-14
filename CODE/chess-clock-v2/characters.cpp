@@ -90,13 +90,13 @@ byte down_arrow[] = {
     B00100
 };
 
-byte* CHARACTERS[8] = {
-  empty_rectangle,
-  filled_rectangle,
-  left_pipe,
-  right_pipe,
-  turn_indicator,
-  start_flag,
-  up_arrow,
-  down_arrow
+byte* CHARACTERS[CharacterCount] = {
+    empty_rectangle,
+    filled_rectangle,
+    left_pipe,
+    right_pipe,
+    turn_indicator,
+    start_flag,
+    up_arrow,
+    down_arrow
 };

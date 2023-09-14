@@ -4,16 +4,16 @@
 
 enum CharactersList
 {
-  EmptyRectangle,
-  FilledRectangle,
-  LeftPipe,
-  RightPipe,
-  TurnIndicator,
-  StartFlag,
-  UpArrow,
-  DownArrow,
+    EmptyRectangle,
+    FilledRectangle,
+    LeftPipe,
+    RightPipe,
+    TurnIndicator,
+    StartFlag,
+    UpArrow,
+    DownArrow,
 
-  CharacterCount
+    CharacterCount
 };
 
 extern byte* CHARACTERS[CharacterCount];

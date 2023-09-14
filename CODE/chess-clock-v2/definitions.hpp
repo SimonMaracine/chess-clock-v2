@@ -1,11 +1,13 @@
 #pragma once
 
-#define RS 2
-#define E 3
-#define D4 4
-#define D5 5
-#define D6 6
-#define D7 7
+#include <stddef.h>
+
+#define PIN_RS 2
+#define PIN_E 3
+#define PIN_D4 4
+#define PIN_D5 5
+#define PIN_D6 6
+#define PIN_D7 7
 
 #define BUZZER 9
 #define LEFT_LED 11
@@ -19,54 +21,65 @@
 
 enum ButtonList
 {
-  LeftPlayerButton,
-  RightPlayerButton,
-  StartStopButton,
-  SoftResetButton,
-  OkButton
+    LeftPlayerButton,
+    RightPlayerButton,
+    StartStopButton,
+    SoftResetButton,
+    OkButton
 };
 
 enum StateList
 {
-  StartupState,
-  MenuState,
-  ModesState,
-  TimeState,
-  PreTimeState,
-  DecisecondsState,
-  TwoClockUpState,
-  TwoClockDownState,
-  OneClockUpState,
-  OneClockDownState
+    StartupState,
+    MenuState,
+    ModesState,
+    TimeState,
+    PreTimeState,
+    DecisecondsState,
+    TwoClockUpState,
+    TwoClockDownState,
+    OneClockUpState,
+    OneClockDownState,
+    DiceState
 };
 
 enum class Menu
 {
-  Modes = 2,
-  Time = 6,
-  Deciseconds = 10,
-  Start = 14
+    Modes,
+    Time,
+    Deciseconds,
+    Start,
+
+    MenuCount
+};
+
+// Uses more memory :P
+constexpr int MENU_CURSOR[static_cast<size_t>(Menu::MenuCount)] = {
+    2, 6, 10, 14
 };
 
 enum class Mode
 {
-  TwoClockUp,
-  TwoClockDown,
-  OneClockUp,
-  OneClockDown,
-  Dice
+    TwoClockUp,
+    TwoClockDown,
+    OneClockUp,
+    OneClockDown,
+    DiceOne,
+    DiceTwo,
+
+    ModeCount
 };
 
 enum class TimeMode
 {
-  Minutes,
-  Seconds
+    Minutes,
+    Seconds
 };
 
 enum class Player
 {
-  Left,
-  Right
+    Left,
+    Right
 };
 
 // Defined in deciseconds
@@ -85,21 +98,21 @@ enum class Player
 
 struct Match
 {
-  Player player = Player::Right;
+    Player player = Player::Right;
 
-  unsigned long left_player_time = 0;  // Deciseconds
-  unsigned long right_player_time = 0;
+    unsigned long left_player_time = 0;  // Deciseconds
+    unsigned long right_player_time = 0;
 
-  bool paused = true;
-  bool ended = false;
-  bool end_flag = false;  // One time flag
+    bool paused = true;
+    bool ended = false;
+    bool end_flag = false;  // One time flag
 };
 
 struct MatchOneTimer
 {
-  unsigned long time = 0;  // Deciseconds
+    unsigned long time = 0;  // Deciseconds
 
-  bool paused = true;
-  bool ended = false;
-  bool end_flag = false;  // One time flag
+    bool paused = true;
+    bool ended = false;
+    bool end_flag = false;  // One time flag
 };

@@ -8,46 +8,47 @@
 
 struct Note
 {
-  Note(unsigned int frequency, unsigned long duration, unsigned long delay)
-    : frequency(frequency), duration(duration), delay(delay) {}
+    Note(unsigned int frequency, unsigned long duration, unsigned long delay)
+        : frequency(frequency), duration(duration), delay(delay) {}
 
-  unsigned int frequency {};
-  unsigned long duration {};
-  unsigned long delay {};
+    unsigned int frequency {};
+    unsigned long duration {};
+    unsigned long delay {};
 };
 
 template<size_t Size>
 struct Melody
 {
-  const Note* get() const
-  {
-    return notes;
-  }
+    const Note* get() const
+    {
+        return notes;
+    }
 
-  constexpr size_t get_size() const
-  {
-    return Size;
-  }
+    constexpr size_t get_size() const
+    {
+        return Size;
+    }
 
-  Note notes[Size];
+    Note notes[Size];
 };
 
 struct Timer
 {
-  Timer(unsigned long tick_milliseconds)
-    : tick_milliseconds(tick_milliseconds) {}
+    Timer(unsigned long tick_time)
+        : tick_time(tick_time) {}
 
-  void reset();
-  bool tick();
+    void reset();
+    bool tick();
 
-  unsigned long tick_milliseconds = 0;
-  unsigned long last_time = 0;
+    // Milliseconds
+    unsigned long tick_time {};
+    unsigned long last_time = 0;
 };
 
 enum class Monotony
 {
-  Ascend,
-  Descend
+    Ascend,
+    Descend
 };
 
 void toggle_light(int light, bool on);
@@ -59,5 +60,23 @@ void display_progress_bar(LiquidCrystal& lcd, unsigned long time, unsigned long 
 template<size_t Size>
 void play_melody(const Melody<Size>& melody)
 {
-  play_sound(melody.get(), melody.get_size());
+    play_sound(melody.get(), melody.get_size());
+}
+
+template<typename E, typename U>
+E wrapped_add(E enumeration, U count)
+{
+    return static_cast<E>(
+        (static_cast<int>(enumeration) + 1) % static_cast<int>(count)
+    );
+}
+
+template<typename E, typename U>
+E wrapped_subtract(E enumeration, U count)
+{
+    const int current = static_cast<int>(enumeration);
+
+    return static_cast<E>(
+        current == 0 ? (static_cast<int>(count) - 1) : current - 1
+    );
 }
