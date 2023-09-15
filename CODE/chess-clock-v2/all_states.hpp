@@ -46,6 +46,8 @@ struct StatePreTime : State
         : State(ctx) {}
 
     virtual void update() override;
+
+    TimeMode previous_time_mode = TimeMode::Minutes;
 };
 
 struct StateDeciseconds : State

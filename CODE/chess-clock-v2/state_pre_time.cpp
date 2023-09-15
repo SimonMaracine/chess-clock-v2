@@ -15,19 +15,24 @@ void StatePreTime::update()
             case TimeMode::Seconds:
                 ctx->time_mode = TimeMode::Minutes;
                 break;
-        }
+        }        
     }
 
     if (ctx->buttons.is_button_pressed(OkButton))
     {
-        switch (ctx->time_mode)
+        if (ctx->time_mode != previous_time_mode)
         {
-            case TimeMode::Minutes:
-                ctx->time_limit = THIRTY_MINUTES_D;
-                break;
-            case TimeMode::Seconds:
-                ctx->time_limit = ONE_MINUTE_D;
-                break;
+            switch (ctx->time_mode)
+            {
+                case TimeMode::Minutes:
+                    ctx->time_limit = THIRTY_MINUTES_D;
+                    break;
+                case TimeMode::Seconds:
+                    ctx->time_limit = ONE_MINUTE_D;
+                    break;
+            }
+
+            previous_time_mode = ctx->time_mode;
         }
 
         ctx->change_state(TimeState);
