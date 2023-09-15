@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #include "other.hpp"
-#include "context.hpp"
+#include "definitions.hpp"
 #include "characters.hpp"
 
 void Timer::reset()

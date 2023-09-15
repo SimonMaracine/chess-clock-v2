@@ -7,8 +7,12 @@ struct Button
 {
     bool currently_pressed = false;
     bool previously_pressed = false;
+    bool generate_event = true;
 
     uint8_t port {};
+
+    // Timer timer {500};
+    unsigned long last_time = 0;
 };
 
 struct Buttons

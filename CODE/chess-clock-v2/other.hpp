@@ -4,7 +4,7 @@
 
 #include <LiquidCrystal.h>
 
-#include "context.hpp"
+#include "definitions.hpp"
 
 struct Note
 {

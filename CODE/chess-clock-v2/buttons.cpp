@@ -17,8 +17,33 @@ void Buttons::update()
     {
         Button& button = buttons[i];
 
-        button.previously_pressed = button.currently_pressed;
-        button.currently_pressed = digitalRead(button.port);
+        if (button.generate_event)
+        {
+            button.previously_pressed = button.currently_pressed;
+            button.currently_pressed = digitalRead(button.port);
+
+            if (button.currently_pressed && !button.previously_pressed)
+            {
+                button.generate_event = false;
+
+                button.last_time = millis();
+
+                // TODO generate event
+                Serial.println("PRESSED");
+            }
+        }
+        else
+        {
+            if (millis() - button.last_time > 500)
+            {
+                if (!digitalRead(button.port))
+                {
+                    button.generate_event = true;
+
+                    Serial.println("GEN EVENT");
+                }
+            }
+        }
     }
 }
 
