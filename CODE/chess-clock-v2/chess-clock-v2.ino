@@ -4,17 +4,17 @@
 #include "characters.hpp"
 #include "data.hpp"
 
-void setup_lcd(LiquidCrystal& lcd)
+static void setup_lcd(LiquidCrystal& lcd)
 {
     lcd.begin(16, 2);
-    lcd.createChar(EmptyRectangle, CHARACTERS[EmptyRectangle]);
-    lcd.createChar(FilledRectangle, CHARACTERS[FilledRectangle]);
-    lcd.createChar(LeftPipe, CHARACTERS[LeftPipe]);
-    lcd.createChar(RightPipe, CHARACTERS[RightPipe]);
-    lcd.createChar(TurnIndicator, CHARACTERS[TurnIndicator]);
-    lcd.createChar(StartFlag, CHARACTERS[StartFlag]);
-    lcd.createChar(UpArrow, CHARACTERS[UpArrow]);
-    lcd.createChar(DownArrow, CHARACTERS[DownArrow]);
+    lcd.createChar(CharacterEmptyRectangle, CHARACTERS[CharacterEmptyRectangle]);
+    lcd.createChar(CharacterFilledRectangle, CHARACTERS[CharacterFilledRectangle]);
+    lcd.createChar(CharacterLeftPipe, CHARACTERS[CharacterLeftPipe]);
+    lcd.createChar(CharacterRightPipe, CHARACTERS[CharacterRightPipe]);
+    lcd.createChar(CharacterTurnIndicator, CHARACTERS[CharacterTurnIndicator]);
+    lcd.createChar(CharacterStartFlag, CHARACTERS[CharacterStartFlag]);
+    lcd.createChar(CharacterUpArrow, CHARACTERS[CharacterUpArrow]);
+    lcd.createChar(CharacterDownArrow, CHARACTERS[CharacterDownArrow]);
 }
 
 static chess_clock::Context ctx;

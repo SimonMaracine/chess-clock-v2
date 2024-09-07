@@ -2,7 +2,8 @@
 
 #include "context.hpp"
 
-namespace chess_clock {
+namespace chess_clock
+{
     struct State
     {
         explicit State(Context& ctx)

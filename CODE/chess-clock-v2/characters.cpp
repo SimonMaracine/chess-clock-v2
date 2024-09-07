@@ -1,6 +1,6 @@
 #include "characters.hpp"
 
-byte empty_rectangle[] = {
+static const byte empty_rectangle[] {
     B00000,
     B11111,
     B10001,
@@ -11,7 +11,7 @@ byte empty_rectangle[] = {
     B00000
 };
 
-byte filled_rectangle[] = {
+static const byte filled_rectangle[] {
     B00000,
     B11111,
     B11111,
@@ -22,7 +22,7 @@ byte filled_rectangle[] = {
     B00000
 };
 
-byte left_pipe[] = {
+static const byte left_pipe[] {
     B10000,
     B10000,
     B10000,
@@ -33,7 +33,7 @@ byte left_pipe[] = {
     B10000
 };
 
-byte right_pipe[] = {
+static const byte right_pipe[] {
     B00001,
     B00001,
     B00001,
@@ -44,7 +44,7 @@ byte right_pipe[] = {
     B00001
 };
 
-byte turn_indicator[] = {
+static const byte turn_indicator[] {
     B00000,
     B00000,
     B01110,
@@ -55,7 +55,7 @@ byte turn_indicator[] = {
     B00000
 };
 
-byte start_flag[] = {
+static const byte start_flag[] {
     B10101,
     B01011,
     B10101,
@@ -66,7 +66,7 @@ byte start_flag[] = {
     B00001
 };
 
-byte up_arrow[] = {
+static const byte up_arrow[] {
     B00100,
     B01110,
     B11111,
@@ -77,7 +77,7 @@ byte up_arrow[] = {
     B00100
 };
 
-byte down_arrow[] = {
+static const byte down_arrow[] {
     B00100,
     B00100,
     B00100,
@@ -88,7 +88,7 @@ byte down_arrow[] = {
     B00100
 };
 
-byte* CHARACTERS[CharacterCount] = {
+byte* CHARACTERS[Character_Count] {
     empty_rectangle,
     filled_rectangle,
     left_pipe,

@@ -2,18 +2,18 @@
 
 #include <Arduino.h>
 
-enum Characters
+enum Character
 {
-    EmptyRectangle,
-    FilledRectangle,
-    LeftPipe,
-    RightPipe,
-    TurnIndicator,
-    StartFlag,
-    UpArrow,
-    DownArrow,
+    CharacterEmptyRectangle,
+    CharacterFilledRectangle,
+    CharacterLeftPipe,
+    CharacterRightPipe,
+    CharacterTurnIndicator,
+    CharacterStartFlag,
+    CharacterUpArrow,
+    CharacterDownArrow,
 
-    CharacterCount
+    Character_Count
 };
 
-extern byte* CHARACTERS[CharacterCount];
+extern byte* CHARACTERS[Character_Count];

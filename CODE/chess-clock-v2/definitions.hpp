@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stddef.h>
-
 #define PIN_RS 2
 #define PIN_E 3
 #define PIN_D4 4
@@ -43,12 +41,14 @@ enum State
     StateDice
 };
 
-enum class Menu
+enum Menu
 {
-    Modes,
-    Time,
-    Deciseconds,
-    Start
+    MenuModes,
+    MenuTime,
+    MenuDeciseconds,
+    MenuStart,
+
+    Menu_Count
 };
 
 // Uses more memory :P
@@ -56,14 +56,16 @@ static constexpr int MENU_CURSOR[4] {
     2, 6, 10, 14
 };
 
-enum class Mode
+enum Mode
 {
-    TwoClockUp,
-    TwoClockDown,
-    OneClockUp,
-    OneClockDown,
-    DiceOne,
-    DiceTwo
+    ModeTwoClockUp,
+    ModeTwoClockDown,
+    ModeOneClockUp,
+    ModeOneClockDown,
+    ModeDiceOne,
+    ModeDiceTwo,
+
+    Mode_Count
 };
 
 enum class TimeMode
@@ -95,8 +97,8 @@ enum class Player
 // TODO move to cpp file that contains all state code
 struct Match
 {
-    unsigned long left_player_time {0};  // Deciseconds
-    unsigned long right_player_time {0};
+    unsigned long time_left {0};  // Deciseconds
+    unsigned long time_right {0};
 
     Player player {Player::Right};
 

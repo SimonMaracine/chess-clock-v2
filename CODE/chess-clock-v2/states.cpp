@@ -1,5 +1,10 @@
 #include "states.hpp"
 
+#include "definitions.hpp"
+#include "melodies.hpp"
+#include "characters.hpp"
+#include "data.hpp"
+
 void StartupState::start()
 {
     timer.reset();
@@ -13,164 +18,170 @@ void StartupState::stop()
 
 void StartupState::update()
 {
-    const bool ok = (
-        ctx.buttons.is_button_pressed(LeftPlayerButton) ||
-        ctx.buttons.is_button_pressed(RightPlayerButton) ||
-        ctx.buttons.is_button_pressed(StartStopButton) ||
-        ctx.buttons.is_button_pressed(SoftResetButton) ||
-        ctx.buttons.is_button_pressed(OkButton)
-    );
+    const bool pressed {
+        ctx.is_button_pressed(ButtonLeftPlayer) ||
+        ctx.is_button_pressed(ButtonRightPlayer) ||
+        ctx.is_button_pressed(ButtonStartStop) ||
+        ctx.is_button_pressed(ButtonSoftReset) ||
+        ctx.is_button_pressed(ButtonOk)
+    };
 
-    if (ok)
+    if (pressed)
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
     if (timer.tick())
     {
-        static bool on = true;
+        static bool on {true};
         on = !on;
         toggle_light(RIGHT_LED, on);
         toggle_light(LEFT_LED, !on);
     }
 
-    static const char* show = (
+    static const char* show {
         analogRead(A5) % 2 == 0 ? "By Tudor & Simon" : "By Simon & Tudor"
-    );
+    };
 
-    ctx.lcd.setCursor(0, 0);
-    ctx.lcd.print("Chess Clock v2.0");
-    ctx.lcd.setCursor(0, 1);
-    ctx.lcd.print(show);
+    ctx.lcd().setCursor(0, 0);
+    ctx.lcd().print("Chess Clock v2.0");
+    ctx.lcd().setCursor(0, 1);
+    ctx.lcd().print(show);
 }
 
 void MenuState::update()
 {
-    if (ctx.buttons.is_button_pressed(LeftPlayerButton))
-    {
-        ctx.lcd.setCursor(MENU_CURSOR[static_cast<size_t>(ctx.menu)], 1);
-        ctx.lcd.print(' ');
+    Data& data {ctx.user_data<Data>()};
 
-        ctx.menu = wrapped_subtract(ctx.menu, Menu::MenuCount);
+    if (ctx.is_button_pressed(ButtonLeftPlayer))
+    {
+        ctx.lcd().setCursor(MENU_CURSOR[data.menu], 1);
+        ctx.lcd().print(' ');
+
+        data.menu = wrapped_subtract(data.menu, Menu_Count);
     }
 
-    if (ctx.buttons.is_button_pressed(RightPlayerButton))
+    if (ctx.is_button_pressed(ButtonRightPlayer))
     {
-        ctx.lcd.setCursor(MENU_CURSOR[static_cast<size_t>(ctx.menu)], 1);
-        ctx.lcd.print(' ');
+        ctx.lcd().setCursor(MENU_CURSOR[data.menu], 1);
+        ctx.lcd().print(' ');
 
-        ctx.menu = wrapped_add(ctx.menu, Menu::MenuCount);
+        data.menu = wrapped_add(data.menu, Menu_Count);
     }
 
-    if (ctx.buttons.is_button_pressed(OkButton))
+    if (ctx.is_button_pressed(ButtonOk))
     {
-        switch (ctx.menu)
+        switch (data.menu)
         {
-            case Menu::Modes:
-                ctx.change_state(ModesState);
+            case MenuModes:
+                ctx.change_state(StateModes);
                 break;
-            case Menu::Time:
-                ctx.change_state(PreTimeState);
+            case MenuTime:
+                ctx.change_state(StatePreTime);
                 break;
-            case Menu::Deciseconds:
-                ctx.change_state(DecisecondsState);
+            case MenuDeciseconds:
+                ctx.change_state(StateDeciseconds);
                 break;
-            case Menu::Start:
-                switch (ctx.mode)
+            case MenuStart:
+                switch (data.mode)
                 {
-                    case Mode::TwoClockUp:
-                        ctx.change_state(TwoClockUpState);
+                    case ModeTwoClockUp:
+                        ctx.change_state(StateTwoClockUp);
                         break;
-                    case Mode::TwoClockDown:
-                        ctx.change_state(TwoClockDownState);
+                    case ModeTwoClockDown:
+                        ctx.change_state(StateTwoClockDown);
                         break;
-                    case Mode::OneClockUp:
-                        ctx.change_state(OneClockUpState);
+                    case ModeOneClockUp:
+                        ctx.change_state(StateOneClockUp);
                         break;
-                    case Mode::OneClockDown:
-                        ctx.change_state(OneClockDownState);
+                    case ModeOneClockDown:
+                        ctx.change_state(StateOneClockDown);
                         break;
-                    case Mode::DiceOne:
-                        ctx.change_state(DiceState);
+                    case ModeDiceOne:
+                        ctx.change_state(StateDice);
                         break;
-                    case Mode::DiceTwo:
-                        ctx.change_state(DiceState);
+                    case ModeDiceTwo:
+                        ctx.change_state(StateDice);
                         break;
                 }
             }
     }
 
-    ctx.lcd.setCursor(3, 0);
-    ctx.lcd.print("Setup Menu");
+    ctx.lcd().setCursor(3, 0);
+    ctx.lcd().print("Setup Menu");
 
-    ctx.lcd.setCursor(1, 1);
-    ctx.lcd.print('M');
-    ctx.lcd.setCursor(5, 1);
-    ctx.lcd.print('T');
-    ctx.lcd.setCursor(9, 1);
-    ctx.lcd.print('D');
-    ctx.lcd.setCursor(13, 1);
-    ctx.lcd.write(StartFlag);
+    ctx.lcd().setCursor(1, 1);
+    ctx.lcd().print('M');
+    ctx.lcd().setCursor(5, 1);
+    ctx.lcd().print('T');
+    ctx.lcd().setCursor(9, 1);
+    ctx.lcd().print('D');
+    ctx.lcd().setCursor(13, 1);
+    ctx.lcd().write(CharacterStartFlag);
 
-    ctx.lcd.setCursor(MENU_CURSOR[static_cast<size_t>(ctx.menu)], 1);
-    ctx.lcd.write(TurnIndicator);
+    ctx.lcd().setCursor(MENU_CURSOR[data.menu], 1);
+    ctx.lcd().write(CharacterTurnIndicator);
 }
 
 void ModesState::update()
 {
-    if (ctx.buttons.is_button_pressed(LeftPlayerButton))
+    Data& data {ctx.user_data<Data>()};
+
+    if (ctx.is_button_pressed(ButtonLeftPlayer))
     {
-        ctx.mode = wrapped_subtract(ctx.mode, Mode::ModeCount);
+        data.mode = wrapped_subtract(data.mode, Mode_Count);
     }
 
-    if (ctx.buttons.is_button_pressed(RightPlayerButton))
+    if (ctx.is_button_pressed(ButtonRightPlayer))
     {
-        ctx.mode = wrapped_add(ctx.mode, Mode::ModeCount);
+        data.mode = wrapped_add(data.mode, Mode_Count);
     }
 
-    if (ctx.buttons.is_button_pressed(OkButton))
+    if (ctx.is_button_pressed(ButtonOk))
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
-    ctx.lcd.setCursor(0, 0);
-    ctx.lcd.print("Set mode:");
+    ctx.lcd().setCursor(0, 0);
+    ctx.lcd().print("Set mode:");
 
-    ctx.lcd.setCursor(0, 1);
-    switch (ctx.mode)
+    ctx.lcd().setCursor(0, 1);
+    switch (data.mode)
     {
-        case Mode::TwoClockUp:
-            ctx.lcd.print("Two Clock ");
-            ctx.lcd.write(UpArrow);
+        case ModeTwoClockUp:
+            ctx.lcd().print("Two Clock ");
+            ctx.lcd().write(CharacterUpArrow);
             break;
-        case Mode::TwoClockDown:
-            ctx.lcd.print("Two Clock ");
-            ctx.lcd.write(DownArrow);
+        case ModeTwoClockDown:
+            ctx.lcd().print("Two Clock ");
+            ctx.lcd().write(CharacterDownArrow);
             break;
-        case Mode::OneClockUp:
-            ctx.lcd.print("One Clock ");
-            ctx.lcd.write(UpArrow);
+        case ModeOneClockUp:
+            ctx.lcd().print("One Clock ");
+            ctx.lcd().write(CharacterUpArrow);
             break;
-        case Mode::OneClockDown:
-            ctx.lcd.print("One Clock ");
-            ctx.lcd.write(DownArrow);
+        case ModeOneClockDown:
+            ctx.lcd().print("One Clock ");
+            ctx.lcd().write(CharacterDownArrow);
             break;
-        case Mode::DiceOne:
-            ctx.lcd.print("Dice One   ");
+        case ModeDiceOne:
+            ctx.lcd().print("Dice One   ");
             break;
-        case Mode::DiceTwo:
-            ctx.lcd.print("Dice Two   ");
+        case ModeDiceTwo:
+            ctx.lcd().print("Dice Two   ");
             break;
     }
 }
 
 void TimeState::update()
 {
-    unsigned long lower_limit;
-    unsigned long upper_limit;
-    unsigned long step;
+    Data& data {ctx.user_data<Data>()};
 
-    switch (ctx.time_mode)
+    unsigned long lower_limit {};
+    unsigned long upper_limit {};
+    unsigned long step {};
+
+    switch (data.time_mode)
     {
         case TimeMode::Minutes:
             lower_limit = ONE_MINUTE_D;
@@ -186,137 +197,143 @@ void TimeState::update()
             break;
     }
 
-    const int DELAY = 200;
+    static constexpr int DELAY {200};
 
-    if (ctx.buttons.is_button_down(LeftPlayerButton))
+    if (ctx.is_button_down(ButtonLeftPlayer))
     {
-        if (ctx.time_limit > lower_limit)
+        if (data.time_limit > lower_limit)
         {
-            ctx.time_limit -= step;
+            data.time_limit -= step;
             delay(DELAY);
         }
     }
 
-    if (ctx.buttons.is_button_down(RightPlayerButton))
+    if (ctx.is_button_down(ButtonRightPlayer))
     {
-        if (ctx.time_limit < upper_limit)
+        if (data.time_limit < upper_limit)
         {
-            ctx.time_limit += step;
+            data.time_limit += step;
             delay(DELAY);
         }
     }
 
-    if (ctx.buttons.is_button_pressed(OkButton))
+    if (ctx.is_button_pressed(ButtonOk))
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
-    ctx.lcd.setCursor(0, 0);
-    ctx.lcd.print("Set time limit:");
+    ctx.lcd().setCursor(0, 0);
+    ctx.lcd().print("Set time limit:");
 
-    ctx.lcd.setCursor(0, 1);
-    switch (ctx.time_mode)
+    ctx.lcd().setCursor(0, 1);
+    switch (data.time_mode)
     {
         case TimeMode::Minutes:
-            ctx.lcd.print(ctx.time_limit / ONE_MINUTE_D);
+            ctx.lcd().print(data.time_limit / ONE_MINUTE_D);
             break;
         case TimeMode::Seconds:
-            ctx.lcd.print(ctx.time_limit / ONE_SECOND_D);
+            ctx.lcd().print(data.time_limit / ONE_SECOND_D);
             break;
     }
 
     // Clear the last digit when there are't three digits
-    ctx.lcd.print(" ");
+    ctx.lcd().print(" ");
 }
 
 void PreTimeState::update()
 {
-    if (ctx.buttons.is_button_pressed(LeftPlayerButton) ||
-        ctx.buttons.is_button_pressed(RightPlayerButton))
+    Data& data {ctx.user_data<Data>()};
+
+    const bool pressed {
+        ctx.is_button_pressed(ButtonLeftPlayer) ||
+        ctx.is_button_pressed(ButtonRightPlayer)
+    };
+
+    if (pressed)
     {
-        switch (ctx.time_mode)
+        switch (data.time_mode)
         {
             case TimeMode::Minutes:
-                ctx.time_mode = TimeMode::Seconds;
+                data.time_mode = TimeMode::Seconds;
                 break;
             case TimeMode::Seconds:
-                ctx.time_mode = TimeMode::Minutes;
+                data.time_mode = TimeMode::Minutes;
                 break;
         }        
     }
 
-    if (ctx.buttons.is_button_pressed(OkButton))
+    if (ctx.is_button_pressed(ButtonOk))
     {
-        if (ctx.time_mode != previous_time_mode)
+        if (data.time_mode != previous_time_mode)
         {
-            switch (ctx.time_mode)
+            switch (data.time_mode)
             {
                 case TimeMode::Minutes:
-                    ctx.time_limit = THIRTY_MINUTES_D;
+                    data.time_limit = THIRTY_MINUTES_D;
                     break;
                 case TimeMode::Seconds:
-                    ctx.time_limit = ONE_MINUTE_D;
+                    data.time_limit = ONE_MINUTE_D;
                     break;
             }
 
-            previous_time_mode = ctx.time_mode;
+            previous_time_mode = data.time_mode;
         }
 
-        ctx.change_state(TimeState);
+        ctx.change_state(StateTime);
     }
 
-    ctx.lcd.setCursor(0, 0);
-    ctx.lcd.print("Set time in:");
+    ctx.lcd().setCursor(0, 0);
+    ctx.lcd().print("Set time in:");
 
-    ctx.lcd.setCursor(0, 1);
-    switch (ctx.time_mode)
+    ctx.lcd().setCursor(0, 1);
+    switch (data.time_mode)
     {
         case TimeMode::Minutes:
-            ctx.lcd.print("Minutes");
+            ctx.lcd().print("Minutes");
             break;
         case TimeMode::Seconds:
-            ctx.lcd.print("Seconds");
+            ctx.lcd().print("Seconds");
             break;
     }
 }
 
 void DecisecondsState::update()
 {
-    Data& data {ctx.get_user_data<Data>()};
+    Data& data {ctx.user_data<Data>()};
 
-    if (ctx.buttons.is_button_pressed(ButtonLeftPlayer))
+    if (ctx.is_button_pressed(ButtonLeftPlayer))
     {
         data.show_deciseconds = !data.show_deciseconds;
     }
 
-    if (ctx.buttons.is_button_pressed(ButtonRightPlayer))
+    if (ctx.is_button_pressed(ButtonRightPlayer))
     {
         data.show_deciseconds = !data.show_deciseconds;
     }
 
-    if (ctx.buttons.is_button_pressed(ButtonOk))
+    if (ctx.is_button_pressed(ButtonOk))
     {
         ctx.change_state(StateMenu);
     }
 
-    ctx.lcd.setCursor(0, 0);
-    ctx.lcd.print("Show fractions:");
+    ctx.lcd().setCursor(0, 0);
+    ctx.lcd().print("Show fractions:");
 
-    ctx.lcd.setCursor(0, 1);
+    ctx.lcd().setCursor(0, 1);
     if (data.show_deciseconds)
     {
-        ctx.lcd.print("On ");
+        ctx.lcd().print("On ");
     }
     else
     {
-        ctx.lcd.print("Off");
+        ctx.lcd().print("Off");
     }
 }
 
 void TwoClockUpState::start()
 {
-    match.left_player_time = 0;
-    match.right_player_time = 0;
+    match.time_left = 0;
+    match.time_right = 0;
 
     match.player = Player::Right;
 
@@ -338,7 +355,9 @@ void TwoClockUpState::stop()
 
 void TwoClockUpState::update()
 {
-    if (ctx.buttons.is_button_pressed(StartStopButton) && !match.ended)
+    const Data& data {ctx.user_data<Data>()};
+
+    if (ctx.is_button_pressed(ButtonStartStop) && !match.ended)
     {
         match.paused = !match.paused;
 
@@ -348,20 +367,20 @@ void TwoClockUpState::update()
         }
     }
 
-    if (ctx.buttons.is_button_pressed(SoftResetButton))
+    if (ctx.is_button_pressed(ButtonSoftReset))
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
     if (!match.paused && !match.ended)
     {
-        if (ctx.buttons.is_button_pressed(LeftPlayerButton) && match.player == Player::Left)
+        if (ctx.is_button_pressed(ButtonLeftPlayer) && match.player == Player::Left)
         {
             match.player = Player::Right;
             toggle_light(RIGHT_LED, true);
             toggle_light(LEFT_LED, false);
         }
-        else if (ctx.buttons.is_button_pressed(RightPlayerButton) && match.player == Player::Right)
+        else if (ctx.is_button_pressed(ButtonRightPlayer) && match.player == Player::Right)
         {
             match.player = Player::Left;
             toggle_light(RIGHT_LED, false);
@@ -373,15 +392,14 @@ void TwoClockUpState::update()
             switch (match.player)
             {
                 case Player::Left:
-                    match.left_player_time++;
+                    match.time_left++;
                     break;
                 case Player::Right:
-                    match.right_player_time++;
+                    match.time_right++;
                     break;
             }
 
-            if (match.left_player_time == ctx.time_limit ||
-                match.right_player_time == ctx.time_limit)
+            if (match.time_left == data.time_limit || match.time_right == data.time_limit)
             {
                 match.ended = true;
                 match.end_flag = true;
@@ -392,58 +410,58 @@ void TwoClockUpState::update()
     // Pause indicator
     if (match.paused)
     {
-        ctx.lcd.setCursor(6, 0);
-        ctx.lcd.print('P');
+        ctx.lcd().setCursor(6, 0);
+        ctx.lcd().print('P');
     }
     else
     {
-        ctx.lcd.setCursor(6, 0);
-        ctx.lcd.print(' ');
+        ctx.lcd().setCursor(6, 0);
+        ctx.lcd().print(' ');
     }
 
     // Left player indicator
-    ctx.lcd.setCursor(0, 0);
-    ctx.lcd.write(EmptyRectangle);
+    ctx.lcd().setCursor(0, 0);
+    ctx.lcd().write(CharacterEmptyRectangle);
 
     // Right player indicator
-    ctx.lcd.setCursor(15, 0);
-    ctx.lcd.write(FilledRectangle);
+    ctx.lcd().setCursor(15, 0);
+    ctx.lcd().write(CharacterFilledRectangle);
 
     // Middle seperator
-    ctx.lcd.setCursor(7, 0);
-    ctx.lcd.write(RightPipe);
-    ctx.lcd.setCursor(7, 1);
-    ctx.lcd.write(RightPipe);
+    ctx.lcd().setCursor(7, 0);
+    ctx.lcd().write(CharacterRightPipe);
+    ctx.lcd().setCursor(7, 1);
+    ctx.lcd().write(CharacterRightPipe);
 
-    ctx.lcd.setCursor(8, 0);
-    ctx.lcd.write(LeftPipe);
-    ctx.lcd.setCursor(8, 1);
-    ctx.lcd.write(LeftPipe);
+    ctx.lcd().setCursor(8, 0);
+    ctx.lcd().write(CharacterLeftPipe);
+    ctx.lcd().setCursor(8, 1);
+    ctx.lcd().write(CharacterLeftPipe);
 
     // Turn indicator
     switch (match.player)
     {
         case Player::Left:
-            ctx.lcd.setCursor(12, 0);
-            ctx.lcd.print(' ');
+            ctx.lcd().setCursor(12, 0);
+            ctx.lcd().print(' ');
 
-            ctx.lcd.setCursor(3, 0);
-            ctx.lcd.write(TurnIndicator);
+            ctx.lcd().setCursor(3, 0);
+            ctx.lcd().write(CharacterTurnIndicator);
 
             break;
         case Player::Right:
-            ctx.lcd.setCursor(3, 0);
-            ctx.lcd.print(' ');
+            ctx.lcd().setCursor(3, 0);
+            ctx.lcd().print(' ');
 
-            ctx.lcd.setCursor(12, 0);
-            ctx.lcd.write(TurnIndicator);
+            ctx.lcd().setCursor(12, 0);
+            ctx.lcd().write(CharacterTurnIndicator);
 
             break;
     }
 
     // Player times
-    display_time(ctx.lcd, match.left_player_time, Player::Left, ctx.show_deciseconds);
-    display_time(ctx.lcd, match.right_player_time, Player::Right, ctx.show_deciseconds);
+    display_time(ctx.lcd(), match.time_left, Player::Left, data.show_deciseconds);
+    display_time(ctx.lcd(), match.time_right, Player::Right, data.show_deciseconds);
 
     if (match.ended)
     {
@@ -457,7 +475,7 @@ void TwoClockUpState::update()
 
         if (end_timer.tick())
         {
-            static bool on = true;
+            static bool on {true};
             on = !on;
             toggle_light(match.player == Player::Right ? RIGHT_LED : LEFT_LED, on);
         }
@@ -466,8 +484,10 @@ void TwoClockUpState::update()
 
 void TwoClockDownState::start()
 {
-    match.left_player_time = ctx.time_limit;
-    match.right_player_time = ctx.time_limit;
+    const Data& data {ctx.user_data<Data>()};
+
+    match.time_left = data.time_limit;
+    match.time_right = data.time_limit;
 
     match.player = Player::Right;
 
@@ -489,7 +509,9 @@ void TwoClockDownState::stop()
 
 void TwoClockDownState::update()
 {
-    if (ctx.buttons.is_button_pressed(StartStopButton) && !match.ended)
+    const Data& data {ctx.user_data<Data>()};
+
+    if (ctx.is_button_pressed(ButtonStartStop) && !match.ended)
     {
         match.paused = !match.paused;
 
@@ -499,20 +521,20 @@ void TwoClockDownState::update()
         }
     }
 
-    if (ctx.buttons.is_button_pressed(SoftResetButton))
+    if (ctx.is_button_pressed(ButtonSoftReset))
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
     if (!match.paused && !match.ended)
     {
-        if (ctx.buttons.is_button_pressed(LeftPlayerButton) && match.player == Player::Left)
+        if (ctx.is_button_pressed(ButtonLeftPlayer) && match.player == Player::Left)
         {
             match.player = Player::Right;
             toggle_light(RIGHT_LED, true);
             toggle_light(LEFT_LED, false);
         }
-        else if (ctx.buttons.is_button_pressed(RightPlayerButton) && match.player == Player::Right)
+        else if (ctx.is_button_pressed(ButtonRightPlayer) && match.player == Player::Right)
         {
             match.player = Player::Left;
             toggle_light(RIGHT_LED, false);
@@ -524,15 +546,14 @@ void TwoClockDownState::update()
             switch (match.player)
             {
                 case Player::Left:
-                    match.left_player_time--;
+                    match.time_left--;
                     break;
                 case Player::Right:
-                    match.right_player_time--;
+                    match.time_right--;
                     break;
             }
 
-            if (match.left_player_time == 0 ||
-                match.right_player_time == 0)
+            if (match.time_left == 0 || match.time_right == 0)
             {
                 match.ended = true;
                 match.end_flag = true;
@@ -543,58 +564,58 @@ void TwoClockDownState::update()
     // Pause indicator
     if (match.paused)
     {
-        ctx.lcd.setCursor(6, 0);
-        ctx.lcd.print('P');
+        ctx.lcd().setCursor(6, 0);
+        ctx.lcd().print('P');
     }
     else
     {
-        ctx.lcd.setCursor(6, 0);
-        ctx.lcd.print(' ');
+        ctx.lcd().setCursor(6, 0);
+        ctx.lcd().print(' ');
     }
 
     // Left player indicator
-    ctx.lcd.setCursor(0, 0);
-    ctx.lcd.write(EmptyRectangle);
+    ctx.lcd().setCursor(0, 0);
+    ctx.lcd().write(CharacterEmptyRectangle);
 
     // Right player indicator
-    ctx.lcd.setCursor(15, 0);
-    ctx.lcd.write(FilledRectangle);
+    ctx.lcd().setCursor(15, 0);
+    ctx.lcd().write(CharacterFilledRectangle);
 
     // Middle seperator
-    ctx.lcd.setCursor(7, 0);
-    ctx.lcd.write(RightPipe);
-    ctx.lcd.setCursor(7, 1);
-    ctx.lcd.write(RightPipe);
+    ctx.lcd().setCursor(7, 0);
+    ctx.lcd().write(CharacterRightPipe);
+    ctx.lcd().setCursor(7, 1);
+    ctx.lcd().write(CharacterRightPipe);
 
-    ctx.lcd.setCursor(8, 0);
-    ctx.lcd.write(LeftPipe);
-    ctx.lcd.setCursor(8, 1);
-    ctx.lcd.write(LeftPipe);
+    ctx.lcd().setCursor(8, 0);
+    ctx.lcd().write(CharacterLeftPipe);
+    ctx.lcd().setCursor(8, 1);
+    ctx.lcd().write(CharacterLeftPipe);
 
     // Turn indicator
     switch (match.player)
     {
         case Player::Left:
-            ctx.lcd.setCursor(12, 0);
-            ctx.lcd.print(' ');
+            ctx.lcd().setCursor(12, 0);
+            ctx.lcd().print(' ');
 
-            ctx.lcd.setCursor(3, 0);
-            ctx.lcd.write(TurnIndicator);
+            ctx.lcd().setCursor(3, 0);
+            ctx.lcd().write(CharacterTurnIndicator);
 
             break;
         case Player::Right:
-            ctx.lcd.setCursor(3, 0);
-            ctx.lcd.print(' ');
+            ctx.lcd().setCursor(3, 0);
+            ctx.lcd().print(' ');
 
-            ctx.lcd.setCursor(12, 0);
-            ctx.lcd.write(TurnIndicator);
+            ctx.lcd().setCursor(12, 0);
+            ctx.lcd().write(CharacterTurnIndicator);
 
             break;
     }
 
     // Player times
-    display_time(ctx.lcd, match.left_player_time, Player::Left, ctx.show_deciseconds);
-    display_time(ctx.lcd, match.right_player_time, Player::Right, ctx.show_deciseconds);
+    display_time(ctx.lcd(), match.time_left, Player::Left, data.show_deciseconds);
+    display_time(ctx.lcd(), match.time_right, Player::Right, data.show_deciseconds);
 
     if (match.ended)
     {
@@ -608,7 +629,7 @@ void TwoClockDownState::update()
 
         if (end_timer.tick())
         {
-            static bool on = true;
+            static bool on {true};
             on = !on;
             toggle_light(match.player == Player::Right ? RIGHT_LED : LEFT_LED, on);
         }
@@ -634,7 +655,9 @@ void OneClockUpState::stop()
 
 void OneClockUpState::update()
 {
-    if (ctx.buttons.is_button_pressed(StartStopButton) && !match.ended)
+    const Data& data {ctx.user_data<Data>()};
+
+    if (ctx.is_button_pressed(ButtonStartStop) && !match.ended)
     {
         match.paused = !match.paused;
 
@@ -644,18 +667,18 @@ void OneClockUpState::update()
         }
     }
 
-    if (ctx.buttons.is_button_pressed(SoftResetButton))
+    if (ctx.is_button_pressed(ButtonSoftReset))
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
-    if (ctx.buttons.is_button_pressed(OkButton))
+    if (ctx.is_button_pressed(ButtonOk))
     {
         match.time = 0;
         match.paused = true;
         match.ended = false;
 
-        ctx.lcd.clear();
+        ctx.lcd().clear();
 
         toggle_light(RIGHT_LED, false);
         toggle_light(LEFT_LED, false);
@@ -671,7 +694,7 @@ void OneClockUpState::update()
         {
             match.time++;
 
-            if (match.time == ctx.time_limit)
+            if (match.time == data.time_limit)
             {
                 match.ended = true;
                 match.end_flag = true;
@@ -682,18 +705,18 @@ void OneClockUpState::update()
     // Pause indicator
     if (match.paused)
     {
-        ctx.lcd.setCursor(2, 1);
-        ctx.lcd.print('P');
+        ctx.lcd().setCursor(2, 1);
+        ctx.lcd().print('P');
     }
     else
     {
-        ctx.lcd.setCursor(2, 1);
-        ctx.lcd.print(' ');
+        ctx.lcd().setCursor(2, 1);
+        ctx.lcd().print(' ');
     }
 
-    display_time_one(ctx.lcd, match.time, ctx.show_deciseconds);
+    display_time_one(ctx.lcd(), match.time, data.show_deciseconds);
 
-    display_progress_bar(ctx.lcd, match.time, ctx.time_limit, Monotony::Ascend);
+    display_progress_bar(ctx.lcd(), match.time, data.time_limit, Monotony::Ascend);
 
     if (match.ended)
     {
@@ -707,7 +730,7 @@ void OneClockUpState::update()
 
         if (end_timer.tick())
         {
-            static bool on = true;
+            static bool on {true};
             on = !on;
             toggle_light(RIGHT_LED, on);
             toggle_light(LEFT_LED, on);
@@ -717,7 +740,9 @@ void OneClockUpState::update()
 
 void OneClockDownState::start()
 {
-    match.time = ctx.time_limit;
+    const Data& data {ctx.user_data<Data>()};
+
+    match.time = data.time_limit;
     match.paused = true;
     match.ended = false;
 
@@ -734,7 +759,9 @@ void OneClockDownState::stop()
 
 void OneClockDownState::update()
 {
-    if (ctx.buttons.is_button_pressed(StartStopButton) && !match.ended)
+    const Data& data {ctx.user_data<Data>()};
+
+    if (ctx.is_button_pressed(ButtonStartStop) && !match.ended)
     {
         match.paused = !match.paused;
 
@@ -744,18 +771,18 @@ void OneClockDownState::update()
         }
     }
 
-    if (ctx.buttons.is_button_pressed(SoftResetButton))
+    if (ctx.is_button_pressed(ButtonSoftReset))
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
-    if (ctx.buttons.is_button_pressed(OkButton))
+    if (ctx.is_button_pressed(ButtonOk))
     {
-        match.time = ctx.time_limit;
+        match.time = data.time_limit;
         match.paused = true;
         match.ended = false;
 
-        ctx.lcd.clear();
+        ctx.lcd().clear();
 
         toggle_light(RIGHT_LED, false);
         toggle_light(LEFT_LED, false);
@@ -782,18 +809,18 @@ void OneClockDownState::update()
     // Pause indicator
     if (match.paused)
     {
-        ctx.lcd.setCursor(2, 1);
-        ctx.lcd.print('P');
+        ctx.lcd().setCursor(2, 1);
+        ctx.lcd().print('P');
     }
     else
     {
-        ctx.lcd.setCursor(2, 1);
-        ctx.lcd.print(' ');
+        ctx.lcd().setCursor(2, 1);
+        ctx.lcd().print(' ');
     }
 
-    display_time_one(ctx.lcd, match.time, ctx.show_deciseconds);
+    display_time_one(ctx.lcd(), match.time, data.show_deciseconds);
 
-    display_progress_bar(ctx.lcd, match.time, ctx.time_limit, Monotony::Descend);
+    display_progress_bar(ctx.lcd(), match.time, data.time_limit, Monotony::Descend);
 
     if (match.ended)
     {
@@ -807,7 +834,7 @@ void OneClockDownState::update()
 
         if (end_timer.tick())
         {
-            static bool on = true;
+            static bool on {true};
             on = !on;
             toggle_light(RIGHT_LED, on);
             toggle_light(LEFT_LED, on);
@@ -821,19 +848,19 @@ static const char* DICE_ANIMATION[2] {
 
 void DiceState::start()
 {
+    Data& data {ctx.user_data<Data>()};
+
     randomSeed(micros() / 4);
 
     dice[0] = 0;
     dice[1] = 0;
 
-    Data& data {ctx.get_user_data<Data>()};
-
     switch (data.mode)
     {
-        case Mode::DiceOne:
+        case ModeDiceOne:
             data.dice_count = 1;
             break;
-        case Mode::DiceTwo:
+        case ModeDiceTwo:
             data.dice_count = 2;
             break;
     }
@@ -841,27 +868,33 @@ void DiceState::start()
 
 void DiceState::update()
 {
-    if (ctx.buttons.is_button_pressed(ButtonLeftPlayer) ||
-        ctx.buttons.is_button_pressed(ButtonRightPlayer))
+    const Data& data {ctx.user_data<Data>()};
+
+    const bool pressed {
+        ctx.is_button_pressed(ButtonLeftPlayer) ||
+        ctx.is_button_pressed(ButtonRightPlayer)
+    };
+
+    if (pressed)
     {
-        for (size_t i = 0; i < 2; i++)
+        for (size_t i {0}; i < 2; i++)
         {
             dice[i] = random(1, 7);
         }
 
-        for (size_t i = 0; i < 8; i++)
+        for (size_t i {0}; i < 8; i++)
         {
-            ctx.lcd.clear();
-            ctx.lcd.setCursor(7, 0);
-            ctx.lcd.print(DICE_ANIMATION[i % 2]);
+            ctx.lcd().clear();
+            ctx.lcd().setCursor(7, 0);
+            ctx.lcd().print(DICE_ANIMATION[i % 2]);
 
-            if (ctx.dice_count == 2)
+            if (data.dice_count == 2)
             {
-                ctx.lcd.setCursor(7, 1);
-                ctx.lcd.print(DICE_ANIMATION[i % 2]);
+                ctx.lcd().setCursor(7, 1);
+                ctx.lcd().print(DICE_ANIMATION[i % 2]);
             }
 
-            static bool on = false;
+            static bool on {false};
             on = !on;
             toggle_light(RIGHT_LED, !on);
             toggle_light(LEFT_LED, on);
@@ -884,35 +917,35 @@ void DiceState::update()
         toggle_light(LEFT_LED, false);
     }
 
-    if (ctx.buttons.is_button_pressed(SoftResetButton))
+    if (ctx.is_button_pressed(ButtonSoftReset))
     {
-        ctx.change_state(MenuState);
+        ctx.change_state(StateMenu);
     }
 
     if (dice[0] != 0)
     {
-        ctx.lcd.setCursor(0, 0);
-        ctx.lcd.print("***");
-        ctx.lcd.setCursor(0, 1);
-        ctx.lcd.print("***");
-        ctx.lcd.setCursor(13, 0);
-        ctx.lcd.print("***");
-        ctx.lcd.setCursor(13, 1);
-        ctx.lcd.print("***");
+        ctx.lcd().setCursor(0, 0);
+        ctx.lcd().print("***");
+        ctx.lcd().setCursor(0, 1);
+        ctx.lcd().print("***");
+        ctx.lcd().setCursor(13, 0);
+        ctx.lcd().print("***");
+        ctx.lcd().setCursor(13, 1);
+        ctx.lcd().print("***");
 
         // The dice
-        ctx.lcd.setCursor(7, 0);
-        ctx.lcd.print(dice[0]);
+        ctx.lcd().setCursor(7, 0);
+        ctx.lcd().print(dice[0]);
 
-        if (ctx.dice_count == 2)
+        if (data.dice_count == 2)
         {
-            ctx.lcd.setCursor(7, 1);
-            ctx.lcd.print(dice[1]);
+            ctx.lcd().setCursor(7, 1);
+            ctx.lcd().print(dice[1]);
         }
     }
     else
     {
-        ctx.lcd.setCursor(1, 0);
-        ctx.lcd.print("Roll the dice!");
+        ctx.lcd().setCursor(1, 0);
+        ctx.lcd().print("Roll the dice!");
     }
 }

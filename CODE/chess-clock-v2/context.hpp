@@ -5,8 +5,6 @@
 
 #include <LiquidCrystal.h>
 
-// #include "definitions.hpp"
-
 #define PIN_RS 2
 #define PIN_E 3
 #define PIN_D4 4
@@ -14,7 +12,8 @@
 #define PIN_D6 6
 #define PIN_D7 7
 
-namespace chess_clock {
+namespace chess_clock
+{
     struct State;
 
     struct Button
@@ -25,27 +24,29 @@ namespace chess_clock {
         uint8_t port {};
     };
 
-    struct Buttons
+    class Buttons
     {
+    public:
         static constexpr size_t MAX_BUTTONS {16};
 
         void add_button(uint8_t port);
         void update();
         bool is_button_pressed(size_t button) const;
         bool is_button_down(size_t button) const;
-
-        Button buttons[MAX_BUTTONS] {};
-        size_t count {0};
+    private:
+        Button m_buttons[MAX_BUTTONS] {};
+        size_t m_count {0};
     };
 
-    struct Context
+    class Context
     {
+    public:
         static constexpr size_t MAX_STATES {16};
 
         using SetupLcd = void(*)(LiquidCrystal& lcd);
 
         Context()
-            : lcd(PIN_RS, PIN_E, PIN_D4, PIN_D5, PIN_D6, PIN_D7) {}
+            : m_lcd(PIN_RS, PIN_E, PIN_D4, PIN_D5, PIN_D6, PIN_D7) {}
 
         void initialize(State& state, SetupLcd setup_lcd, void* user_data);
         void update();
@@ -54,29 +55,30 @@ namespace chess_clock {
         void add_button(uint8_t port);
         void change_state(size_t state);
 
-        template<typename T>
-        T& get_user_data()
+        bool is_button_pressed(size_t button) const;
+        bool is_button_down(size_t button) const;        
+
+        LiquidCrystal& lcd()
         {
-            return *static_cast<T*>(user_data);
+            return m_lcd;
         }
 
-        LiquidCrystal lcd;
-        Buttons buttons;
+        template<typename T>
+        T& user_data()
+        {
+            return *static_cast<T*>(m_user_data);
+        }
+    private:
+        LiquidCrystal m_lcd;
+        Buttons m_buttons;
 
-        State* current {nullptr};
-        State* next {nullptr};
+        State* m_current {nullptr};
+        State* m_next {nullptr};
 
-        State* states[MAX_STATES] {};
-        size_t count {0};
-        bool changed_state {false};
+        State* m_states[MAX_STATES] {};
+        size_t m_count {0};
+        bool m_changed_state {false};
 
-        void* user_data {nullptr};
-
-        // Menu menu {Menu::Modes};
-        // Mode mode {Mode::TwoClockUp};
-        // TimeMode time_mode {TimeMode::Minutes};
-        // unsigned long time_limit {THIRTY_MINUTES_D};  // Deciseconds
-        // size_t dice_count {1};
-        // bool show_deciseconds {false};
+        void* m_user_data {nullptr};
     };
 }

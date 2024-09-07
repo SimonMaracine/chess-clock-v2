@@ -133,7 +133,7 @@ void display_progress_bar(LiquidCrystal& lcd, unsigned long time, unsigned long 
 
     for (long i {0}; i < cells_filled; i++)
     {
-        lcd.write(FilledRectangle);
+        lcd.write(CharacterFilledRectangle);
     }
 
     for (long i {cells_filled}; i < CELLS_COUNT; i++)
