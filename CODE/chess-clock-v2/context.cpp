@@ -1,57 +1,82 @@
-#include <stddef.h>
-#include <stdint.h>
-
-#include "definitions.hpp"
-#include "buttons.hpp"
-#include "state.hpp"
 #include "context.hpp"
-#include "characters.hpp"
 
-void Context::initialize(State* state)
-{
-    this->state.current = state;
-    this->state.current->start();
+#include <Arduino.h>
 
-    lcd.begin(16, 2);
-    lcd.createChar(EmptyRectangle, CHARACTERS[EmptyRectangle]);
-    lcd.createChar(FilledRectangle, CHARACTERS[FilledRectangle]);
-    lcd.createChar(LeftPipe, CHARACTERS[LeftPipe]);
-    lcd.createChar(RightPipe, CHARACTERS[RightPipe]);
-    lcd.createChar(TurnIndicator, CHARACTERS[TurnIndicator]);
-    lcd.createChar(StartFlag, CHARACTERS[StartFlag]);
-    lcd.createChar(UpArrow, CHARACTERS[UpArrow]);
-    lcd.createChar(DownArrow, CHARACTERS[DownArrow]);
-}
+// #include "definitions.hpp"
+#include "state.hpp"
+// #include "characters.hpp"
 
-void Context::update()
-{
-    buttons.update();
-    state.current->update();
-
-    if (state.changed_state)
+namespace chess_clock {
+    void Buttons::add_button(uint8_t port)
     {
-        lcd.clear();
-        this->state.current->stop();
-        this->state.current = this->state.next;
-        this->state.current->start();
-
-        state.changed_state = false;
+        buttons[count].port = port;
+        count++;
     }
-}
 
-void Context::add_state(State* state)
-{
-    this->state.states[this->state.count] = state;
-    this->state.count++;
-}
+    void Buttons::update()
+    {
+        for (size_t i {0}; i < count; i++)
+        {
+            Button& button {buttons[i]};
 
-void Context::add_button(uint8_t port)
-{
-    buttons.add_button(port);
-}
+            button.previously_pressed = button.currently_pressed;
+            button.currently_pressed = digitalRead(button.port);
+        }
+    }
 
-void Context::change_state(size_t state)
-{
-    this->state.next = this->state.states[state];
-    this->state.changed_state = true;
+    bool Buttons::is_button_pressed(size_t button) const
+    {
+        const Button state {buttons[button]};
+
+        return state.currently_pressed && !state.previously_pressed;
+    }
+
+    bool Buttons::is_button_down(size_t button) const {
+        const Button state {buttons[button]};
+
+        return state.currently_pressed;
+    }
+
+    void Context::initialize(State& state, SetupLcd setup_lcd, void* user_data)
+    {
+        this->user_data = user_data;
+
+        this->current = &state;
+        this->current->start();
+
+        setup_lcd(lcd);
+    }
+
+    void Context::update()
+    {
+        buttons.update();
+        current->update();
+
+        if (changed_state)
+        {
+            lcd.clear();
+            this->current->stop();
+            this->current = this->next;
+            this->current->start();
+
+            changed_state = false;
+        }
+    }
+
+    void Context::add_state(State& state)
+    {
+        this->states[this->count] = &state;
+        this->count++;
+    }
+
+    void Context::add_button(uint8_t port)
+    {
+        buttons.add_button(port);
+    }
+
+    void Context::change_state(size_t state)
+    {
+        this->next = this->states[state];
+        this->changed_state = true;
+    }
 }

@@ -5,6 +5,7 @@
 #include <LiquidCrystal.h>
 
 #include "context.hpp"
+#include "definitions.hpp"
 
 struct Note
 {
@@ -42,7 +43,7 @@ struct Timer
 
     // Milliseconds
     unsigned long tick_time {};
-    unsigned long last_time = 0;
+    unsigned long last_time {0};
 };
 
 enum class Monotony
@@ -74,7 +75,7 @@ E wrapped_add(E enumeration, U count)
 template<typename E, typename U>
 E wrapped_subtract(E enumeration, U count)
 {
-    const int current = static_cast<int>(enumeration);
+    const int current {static_cast<int>(enumeration)};
 
     return static_cast<E>(
         current == 0 ? (static_cast<int>(count) - 1) : current - 1

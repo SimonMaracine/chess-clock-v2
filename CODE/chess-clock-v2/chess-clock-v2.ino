@@ -1,37 +1,53 @@
 #include "context.hpp"
 #include "definitions.hpp"
-#include "all_states.hpp"
+#include "states.hpp"
+#include "characters.hpp"
+#include "data.hpp"
 
-static Context ctx;
+void setup_lcd(LiquidCrystal& lcd)
+{
+    lcd.begin(16, 2);
+    lcd.createChar(EmptyRectangle, CHARACTERS[EmptyRectangle]);
+    lcd.createChar(FilledRectangle, CHARACTERS[FilledRectangle]);
+    lcd.createChar(LeftPipe, CHARACTERS[LeftPipe]);
+    lcd.createChar(RightPipe, CHARACTERS[RightPipe]);
+    lcd.createChar(TurnIndicator, CHARACTERS[TurnIndicator]);
+    lcd.createChar(StartFlag, CHARACTERS[StartFlag]);
+    lcd.createChar(UpArrow, CHARACTERS[UpArrow]);
+    lcd.createChar(DownArrow, CHARACTERS[DownArrow]);
+}
+
+static chess_clock::Context ctx;
+static Data data;
 
 void setup()
 {
     Serial.begin(9600);
 
     // Allocate all states
-    StateStartup startup {&ctx};
-    StateMenu menu {&ctx};
-    StateModes modes {&ctx};
-    StateTime time {&ctx};
-    StatePreTime pre_time {&ctx};
-    StateDeciseconds deciseconds {&ctx};
-    StateTwoClockUp two_clock_up {&ctx};
-    StateTwoClockDown two_clock_down {&ctx};
-    StateOneClockUp one_clock_up {&ctx};
-    StateOneClockDown one_clock_down {&ctx};
-    StateDice dice {&ctx};
+    StartupState startup {ctx};
+    MenuState menu {ctx};
+    ModesState modes {ctx};
+    TimeState time {ctx};
+    PreTimeState pre_time {ctx};
+    DecisecondsState deciseconds {ctx};
+    TwoClockUpState two_clock_up {ctx};
+    TwoClockDownState two_clock_down {ctx};
+    OneClockUpState one_clock_up {ctx};
+    OneClockDownState one_clock_down {ctx};
+    DiceState dice {ctx};
 
-    ctx.add_state(&startup);
-    ctx.add_state(&menu);
-    ctx.add_state(&modes);
-    ctx.add_state(&time);
-    ctx.add_state(&pre_time);
-    ctx.add_state(&deciseconds);
-    ctx.add_state(&two_clock_up);
-    ctx.add_state(&two_clock_down);
-    ctx.add_state(&one_clock_up);
-    ctx.add_state(&one_clock_down);
-    ctx.add_state(&dice);
+    ctx.add_state(startup);
+    ctx.add_state(menu);
+    ctx.add_state(modes);
+    ctx.add_state(time);
+    ctx.add_state(pre_time);
+    ctx.add_state(deciseconds);
+    ctx.add_state(two_clock_up);
+    ctx.add_state(two_clock_down);
+    ctx.add_state(one_clock_up);
+    ctx.add_state(one_clock_down);
+    ctx.add_state(dice);
 
     ctx.add_button(LEFT_PLAYER_BUTTON);
     ctx.add_button(RIGHT_PLAYER_BUTTON);
@@ -39,7 +55,7 @@ void setup()
     ctx.add_button(SOFT_RESET_BUTTON);
     ctx.add_button(OK_BUTTON);
 
-    ctx.initialize(&startup);
+    ctx.initialize(startup, setup_lcd, &data);
 
     pinMode(BUZZER, OUTPUT);
     pinMode(LEFT_LED, OUTPUT);
@@ -49,5 +65,4 @@ void setup()
 void loop()
 {
     ctx.update();
-    delay(2);
 }

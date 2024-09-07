@@ -1,4 +1,3 @@
-#include "other.hpp"
 #include "melodies.hpp"
 
 const Melody<4> END_MELODY {

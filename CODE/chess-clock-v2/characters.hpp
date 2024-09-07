@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-enum CharactersList
+enum Characters
 {
     EmptyRectangle,
     FilledRectangle,

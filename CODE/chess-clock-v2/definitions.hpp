@@ -19,28 +19,28 @@
 #define SOFT_RESET_BUTTON A3
 #define OK_BUTTON A4
 
-enum ButtonList
+enum Button
 {
-    LeftPlayerButton,
-    RightPlayerButton,
-    StartStopButton,
-    SoftResetButton,
-    OkButton
+    ButtonLeftPlayer,
+    ButtonRightPlayer,
+    ButtonStartStop,
+    ButtonSoftReset,
+    ButtonOk
 };
 
-enum StateList
+enum State
 {
-    StartupState,
-    MenuState,
-    ModesState,
-    TimeState,
-    PreTimeState,
-    DecisecondsState,
-    TwoClockUpState,
-    TwoClockDownState,
-    OneClockUpState,
-    OneClockDownState,
-    DiceState
+    StateStartup,
+    StateMenu,
+    StateModes,
+    StateTime,
+    StatePreTime,
+    StateDeciseconds,
+    StateTwoClockUp,
+    StateTwoClockDown,
+    StateOneClockUp,
+    StateOneClockDown,
+    StateDice
 };
 
 enum class Menu
@@ -48,13 +48,11 @@ enum class Menu
     Modes,
     Time,
     Deciseconds,
-    Start,
-
-    MenuCount
+    Start
 };
 
 // Uses more memory :P
-constexpr int MENU_CURSOR[static_cast<size_t>(Menu::MenuCount)] = {
+static constexpr int MENU_CURSOR[4] {
     2, 6, 10, 14
 };
 
@@ -65,9 +63,7 @@ enum class Mode
     OneClockUp,
     OneClockDown,
     DiceOne,
-    DiceTwo,
-
-    ModeCount
+    DiceTwo
 };
 
 enum class TimeMode
@@ -96,23 +92,24 @@ enum class Player
 
 #define DEGREE_CHARACTER 176
 
+// TODO move to cpp file that contains all state code
 struct Match
 {
-    Player player = Player::Right;
+    unsigned long left_player_time {0};  // Deciseconds
+    unsigned long right_player_time {0};
 
-    unsigned long left_player_time = 0;  // Deciseconds
-    unsigned long right_player_time = 0;
+    Player player {Player::Right};
 
-    bool paused = true;
-    bool ended = false;
-    bool end_flag = false;  // One time flag
+    bool paused {true};
+    bool ended {false};
+    bool end_flag {false};  // One time flag
 };
 
 struct MatchOneTimer
 {
-    unsigned long time = 0;  // Deciseconds
+    unsigned long time {0};  // Deciseconds
 
-    bool paused = true;
-    bool ended = false;
-    bool end_flag = false;  // One time flag
+    bool paused {true};
+    bool ended {false};
+    bool end_flag {false};  // One time flag
 };
