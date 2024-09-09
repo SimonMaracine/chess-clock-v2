@@ -1,9 +1,38 @@
 #include "states.hpp"
 
-#include "definitions.hpp"
-#include "melodies.hpp"
 #include "characters.hpp"
+#include "melody.hpp"
 #include "data.hpp"
+
+static constexpr chess_clock::Melody<4> END_MELODY {
+    chess_clock::Note(1000, 100, 50),
+    chess_clock::Note(800, 100, 50),
+    chess_clock::Note(600, 100, 50),
+    chess_clock::Note(200, 400, 1)
+};
+
+static constexpr chess_clock::Melody<4> START_MELODY {
+    chess_clock::Note(200, 100, 50),
+    chess_clock::Note(600, 100, 50),
+    chess_clock::Note(800, 100, 50),
+    chess_clock::Note(1000, 150, 1)
+};
+
+static constexpr chess_clock::Melody<1> DICE_NOTE1 {
+    chess_clock::Note(300, 25, 1)
+};
+
+static constexpr chess_clock::Melody<1> DICE_NOTE2 {
+    chess_clock::Note(100, 25, 1)
+};
+
+static constexpr chess_clock::Melody<1> START_BEEP {
+    chess_clock::Note(300, 150, 1)
+};
+
+static constexpr chess_clock::Melody<1> GENTLE_RESET_BEEP {
+    chess_clock::Note(600, 150, 1)
+};
 
 void StartupState::start()
 {
@@ -12,8 +41,8 @@ void StartupState::start()
 
 void StartupState::stop()
 {
-    toggle_light(RIGHT_LED, false);
-    toggle_light(LEFT_LED, false);
+    toggle_light(LED_RIGHT, false);
+    toggle_light(LED_LEFT, false);
 }
 
 void StartupState::update()
@@ -35,8 +64,8 @@ void StartupState::update()
     {
         static bool on {true};
         on = !on;
-        toggle_light(RIGHT_LED, on);
-        toggle_light(LEFT_LED, !on);
+        toggle_light(LED_RIGHT, on);
+        toggle_light(LED_LEFT, !on);
     }
 
     static const char* show {
@@ -339,18 +368,18 @@ void TwoClockUpState::start()
 
     match.paused = true;
     match.ended = false;
-    toggle_light(RIGHT_LED, true);
-    toggle_light(LEFT_LED, false);
+    toggle_light(LED_RIGHT, true);
+    toggle_light(LED_LEFT, false);
 
-    play_melody(START_MELODY);
+    chess_clock::play_melody<BUZZER>(START_MELODY);
 
     timer.reset();
 }
 
 void TwoClockUpState::stop()
 {
-    toggle_light(RIGHT_LED, false);
-    toggle_light(LEFT_LED, false);
+    toggle_light(LED_RIGHT, false);
+    toggle_light(LED_LEFT, false);
 }
 
 void TwoClockUpState::update()
@@ -363,7 +392,7 @@ void TwoClockUpState::update()
 
         if (!match.paused)
         {
-            play_melody(START_BEEP);
+            chess_clock::play_melody<BUZZER>(START_BEEP);
         }
     }
 
@@ -377,14 +406,14 @@ void TwoClockUpState::update()
         if (ctx.is_button_pressed(ButtonLeftPlayer) && match.player == Player::Left)
         {
             match.player = Player::Right;
-            toggle_light(RIGHT_LED, true);
-            toggle_light(LEFT_LED, false);
+            toggle_light(LED_RIGHT, true);
+            toggle_light(LED_LEFT, false);
         }
         else if (ctx.is_button_pressed(ButtonRightPlayer) && match.player == Player::Right)
         {
             match.player = Player::Left;
-            toggle_light(RIGHT_LED, false);
-            toggle_light(LEFT_LED, true);
+            toggle_light(LED_RIGHT, false);
+            toggle_light(LED_LEFT, true);
         }
 
         if (timer.tick())
@@ -467,7 +496,7 @@ void TwoClockUpState::update()
     {
         if (match.end_flag)
         {
-            play_melody(END_MELODY);
+            chess_clock::play_melody<BUZZER>(END_MELODY);
             end_timer.reset();
 
             match.end_flag = false;
@@ -477,7 +506,7 @@ void TwoClockUpState::update()
         {
             static bool on {true};
             on = !on;
-            toggle_light(match.player == Player::Right ? RIGHT_LED : LEFT_LED, on);
+            toggle_light(match.player == Player::Right ? LED_RIGHT : LED_LEFT, on);
         }
     }
 }
@@ -493,18 +522,18 @@ void TwoClockDownState::start()
 
     match.paused = true;
     match.ended = false;
-    toggle_light(RIGHT_LED, true);
-    toggle_light(LEFT_LED, false);
+    toggle_light(LED_RIGHT, true);
+    toggle_light(LED_LEFT, false);
 
-    play_melody(START_MELODY);
+    chess_clock::play_melody<BUZZER>(START_MELODY);
 
     timer.reset();
 }
 
 void TwoClockDownState::stop()
 {
-    toggle_light(RIGHT_LED, false);
-    toggle_light(LEFT_LED, false);
+    toggle_light(LED_RIGHT, false);
+    toggle_light(LED_LEFT, false);
 }
 
 void TwoClockDownState::update()
@@ -517,7 +546,7 @@ void TwoClockDownState::update()
 
         if (!match.paused)
         {
-            play_melody(START_BEEP);
+            chess_clock::play_melody<BUZZER>(START_BEEP);
         }
     }
 
@@ -531,14 +560,14 @@ void TwoClockDownState::update()
         if (ctx.is_button_pressed(ButtonLeftPlayer) && match.player == Player::Left)
         {
             match.player = Player::Right;
-            toggle_light(RIGHT_LED, true);
-            toggle_light(LEFT_LED, false);
+            toggle_light(LED_RIGHT, true);
+            toggle_light(LED_LEFT, false);
         }
         else if (ctx.is_button_pressed(ButtonRightPlayer) && match.player == Player::Right)
         {
             match.player = Player::Left;
-            toggle_light(RIGHT_LED, false);
-            toggle_light(LEFT_LED, true);
+            toggle_light(LED_RIGHT, false);
+            toggle_light(LED_LEFT, true);
         }
 
         if (timer.tick())
@@ -621,7 +650,7 @@ void TwoClockDownState::update()
     {
         if (match.end_flag)
         {
-            play_melody(END_MELODY);
+            chess_clock::play_melody<BUZZER>(END_MELODY);
             end_timer.reset();
 
             match.end_flag = false;
@@ -631,7 +660,7 @@ void TwoClockDownState::update()
         {
             static bool on {true};
             on = !on;
-            toggle_light(match.player == Player::Right ? RIGHT_LED : LEFT_LED, on);
+            toggle_light(match.player == Player::Right ? LED_RIGHT : LED_LEFT, on);
         }
     }
 }
@@ -642,15 +671,15 @@ void OneClockUpState::start()
     match.paused = true;
     match.ended = false;
 
-    play_melody(START_MELODY);
+    chess_clock::play_melody<BUZZER>(START_MELODY);
 
     timer.reset();
 }
 
 void OneClockUpState::stop()
 {
-    toggle_light(RIGHT_LED, false);
-    toggle_light(LEFT_LED, false);
+    toggle_light(LED_RIGHT, false);
+    toggle_light(LED_LEFT, false);
 }
 
 void OneClockUpState::update()
@@ -663,7 +692,7 @@ void OneClockUpState::update()
 
         if (!match.paused)
         {
-            play_melody(START_BEEP);
+            chess_clock::play_melody<BUZZER>(START_BEEP);
         }
     }
 
@@ -680,10 +709,10 @@ void OneClockUpState::update()
 
         ctx.lcd().clear();
 
-        toggle_light(RIGHT_LED, false);
-        toggle_light(LEFT_LED, false);
+        toggle_light(LED_RIGHT, false);
+        toggle_light(LED_LEFT, false);
 
-        play_melody(GENTLE_RESET_BEEP);
+        chess_clock::play_melody<BUZZER>(GENTLE_RESET_BEEP);
 
         timer.reset();
     }
@@ -722,7 +751,7 @@ void OneClockUpState::update()
     {
         if (match.end_flag)
         {
-            play_melody(END_MELODY);
+            chess_clock::play_melody<BUZZER>(END_MELODY);
             end_timer.reset();
 
             match.end_flag = false;
@@ -732,8 +761,8 @@ void OneClockUpState::update()
         {
             static bool on {true};
             on = !on;
-            toggle_light(RIGHT_LED, on);
-            toggle_light(LEFT_LED, on);
+            toggle_light(LED_RIGHT, on);
+            toggle_light(LED_LEFT, on);
         }
     }
 }
@@ -746,15 +775,15 @@ void OneClockDownState::start()
     match.paused = true;
     match.ended = false;
 
-    play_melody(START_MELODY);
+    chess_clock::play_melody<BUZZER>(START_MELODY);
 
     timer.reset();
 }
 
 void OneClockDownState::stop()
 {
-    toggle_light(RIGHT_LED, false);
-    toggle_light(LEFT_LED, false);
+    toggle_light(LED_RIGHT, false);
+    toggle_light(LED_LEFT, false);
 }
 
 void OneClockDownState::update()
@@ -767,7 +796,7 @@ void OneClockDownState::update()
 
         if (!match.paused)
         {
-            play_melody(START_BEEP);
+            chess_clock::play_melody<BUZZER>(START_BEEP);
         }
     }
 
@@ -784,10 +813,10 @@ void OneClockDownState::update()
 
         ctx.lcd().clear();
 
-        toggle_light(RIGHT_LED, false);
-        toggle_light(LEFT_LED, false);
+        toggle_light(LED_RIGHT, false);
+        toggle_light(LED_LEFT, false);
 
-        play_melody(GENTLE_RESET_BEEP);
+        chess_clock::play_melody<BUZZER>(GENTLE_RESET_BEEP);
 
         timer.reset();
     }
@@ -826,7 +855,7 @@ void OneClockDownState::update()
     {
         if (match.end_flag)
         {
-            play_melody(END_MELODY);
+            chess_clock::play_melody<BUZZER>(END_MELODY);
             end_timer.reset();
 
             match.end_flag = false;
@@ -836,8 +865,8 @@ void OneClockDownState::update()
         {
             static bool on {true};
             on = !on;
-            toggle_light(RIGHT_LED, on);
-            toggle_light(LEFT_LED, on);
+            toggle_light(LED_RIGHT, on);
+            toggle_light(LED_LEFT, on);
         }
     }
 }
@@ -896,25 +925,25 @@ void DiceState::update()
 
             static bool on {false};
             on = !on;
-            toggle_light(RIGHT_LED, !on);
-            toggle_light(LEFT_LED, on);
+            toggle_light(LED_RIGHT, !on);
+            toggle_light(LED_LEFT, on);
 
             delay(150);
 
             if (i % 2 == 0)
             {
-                play_melody(DICE_NOTE1);
+                chess_clock::play_melody<BUZZER>(DICE_NOTE1);
             }
             else
             {
-                play_melody(DICE_NOTE2);
+                chess_clock::play_melody<BUZZER>(DICE_NOTE2);
             }
 
             delay(150);
         }
 
-        toggle_light(RIGHT_LED, false);
-        toggle_light(LEFT_LED, false);
+        toggle_light(LED_RIGHT, false);
+        toggle_light(LED_LEFT, false);
     }
 
     if (ctx.is_button_pressed(ButtonSoftReset))

@@ -8,14 +8,14 @@
 #define PIN_D7 7
 
 #define BUZZER 9
-#define LEFT_LED 11
-#define RIGHT_LED 10
+#define LED_LEFT 11
+#define LED_RIGHT 10
 
-#define LEFT_PLAYER_BUTTON A0
-#define RIGHT_PLAYER_BUTTON A1
-#define START_STOP_BUTTON A2
-#define SOFT_RESET_BUTTON A3
-#define OK_BUTTON A4
+#define BUTTON_LEFT_PLAYER A0
+#define BUTTON_RIGHT_PLAYER A1
+#define BUTTON_START_STOP A2
+#define BUTTON_SOFT_RESET A3
+#define BUTTON_OK A4
 
 enum Button
 {
@@ -91,27 +91,3 @@ enum class Player
 #define ONE_SECOND_M 1000
 #define ONE_DECISECOND_M 100
 #define TWO_DECISECONDS_M 200
-
-#define DEGREE_CHARACTER 176
-
-// TODO move to cpp file that contains all state code
-struct Match
-{
-    unsigned long time_left {0};  // Deciseconds
-    unsigned long time_right {0};
-
-    Player player {Player::Right};
-
-    bool paused {true};
-    bool ended {false};
-    bool end_flag {false};  // One time flag
-};
-
-struct MatchOneTimer
-{
-    unsigned long time {0};  // Deciseconds
-
-    bool paused {true};
-    bool ended {false};
-    bool end_flag {false};  // One time flag
-};

@@ -49,17 +49,17 @@ void setup()
     ctx.add_state(one_clock_down);
     ctx.add_state(dice);
 
-    ctx.add_button(LEFT_PLAYER_BUTTON);
-    ctx.add_button(RIGHT_PLAYER_BUTTON);
-    ctx.add_button(START_STOP_BUTTON);
-    ctx.add_button(SOFT_RESET_BUTTON);
-    ctx.add_button(OK_BUTTON);
+    ctx.add_button(BUTTON_LEFT_PLAYER);
+    ctx.add_button(BUTTON_RIGHT_PLAYER);
+    ctx.add_button(BUTTON_START_STOP);
+    ctx.add_button(BUTTON_SOFT_RESET);
+    ctx.add_button(BUTTON_OK);
 
     ctx.initialize(startup, setup_lcd, &data);
 
     pinMode(BUZZER, OUTPUT);
-    pinMode(LEFT_LED, OUTPUT);
-    pinMode(RIGHT_LED, OUTPUT);
+    pinMode(LED_LEFT, OUTPUT);
+    pinMode(LED_RIGHT, OUTPUT);
 }
 
 void loop()

@@ -3,6 +3,29 @@
 #include "state.hpp"
 #include "context.hpp"
 #include "other.hpp"
+#include "definitions.hpp"
+#include "timer.hpp"
+
+struct Match
+{
+    unsigned long time_left {0};  // Deciseconds
+    unsigned long time_right {0};
+
+    Player player {Player::Right};
+
+    bool paused {true};
+    bool ended {false};
+    bool end_flag {false};  // One time flag
+};
+
+struct MatchOneTimer
+{
+    unsigned long time {0};  // Deciseconds
+
+    bool paused {true};
+    bool ended {false};
+    bool end_flag {false};  // One time flag
+};
 
 struct StartupState : chess_clock::State
 {
@@ -13,7 +36,7 @@ struct StartupState : chess_clock::State
     void stop() override;
     void update() override;
 
-    Timer timer {ONE_SECOND_M};
+    chess_clock::Timer<ONE_SECOND_M> timer;
 };
 
 struct MenuState : chess_clock::State
@@ -67,8 +90,8 @@ struct TwoClockUpState : chess_clock::State
     void stop() override;
     void update() override;
 
-    Timer timer {ONE_DECISECOND_M};
-    Timer end_timer {TWO_DECISECONDS_M};
+    chess_clock::Timer<ONE_DECISECOND_M> timer;
+    chess_clock::Timer<TWO_DECISECONDS_M> end_timer;
     Match match;
 };
 
@@ -81,8 +104,8 @@ struct TwoClockDownState : chess_clock::State
     void stop() override;
     void update() override;
 
-    Timer timer {ONE_DECISECOND_M};
-    Timer end_timer {TWO_DECISECONDS_M};
+    chess_clock::Timer<ONE_DECISECOND_M> timer;
+    chess_clock::Timer<TWO_DECISECONDS_M> end_timer;
     Match match;
 };
 
@@ -95,8 +118,8 @@ struct OneClockUpState : chess_clock::State
     void stop() override;
     void update() override;
 
-    Timer timer {ONE_DECISECOND_M};
-    Timer end_timer {TWO_DECISECONDS_M};
+    chess_clock::Timer<ONE_DECISECOND_M> timer;
+    chess_clock::Timer<TWO_DECISECONDS_M> end_timer;
     MatchOneTimer match;
 };
 
@@ -109,8 +132,8 @@ struct OneClockDownState : chess_clock::State
     void stop() override;
     void update() override;
 
-    Timer timer {ONE_DECISECOND_M};
-    Timer end_timer {TWO_DECISECONDS_M};
+    chess_clock::Timer<ONE_DECISECOND_M> timer;
+    chess_clock::Timer<TWO_DECISECONDS_M> end_timer;
     MatchOneTimer match;
 };
 

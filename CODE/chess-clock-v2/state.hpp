@@ -4,8 +4,9 @@
 
 namespace chess_clock
 {
-    struct State
+    class State
     {
+    public:
         explicit State(Context& ctx)
             : ctx(ctx) {}
         virtual ~State() = default;
@@ -18,7 +19,7 @@ namespace chess_clock
         virtual void start() {}
         virtual void stop() {}
         virtual void update() = 0;
-
+    protected:
         Context& ctx;
     };
 }

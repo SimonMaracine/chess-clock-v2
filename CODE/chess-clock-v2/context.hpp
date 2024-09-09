@@ -14,7 +14,7 @@
 
 namespace chess_clock
 {
-    struct State;
+    class State;
 
     struct Button
     {

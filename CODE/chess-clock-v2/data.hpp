@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #include "definitions.hpp"
 
 struct Data {
