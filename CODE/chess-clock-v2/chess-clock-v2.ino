@@ -17,45 +17,45 @@ static void setup_lcd(LiquidCrystal& lcd)
     lcd.createChar(CharacterDownArrow, CHARACTERS[CharacterDownArrow]);
 }
 
-static chess_clock::Context ctx;
-static Data data;
+static chess_clock::Context g_ctx;
+static Data g_data;
 
 void setup()
 {
     Serial.begin(9600);
 
     // Allocate all states
-    StartupState startup {ctx};
-    MenuState menu {ctx};
-    ModesState modes {ctx};
-    TimeState time {ctx};
-    PreTimeState pre_time {ctx};
-    DecisecondsState deciseconds {ctx};
-    TwoClockUpState two_clock_up {ctx};
-    TwoClockDownState two_clock_down {ctx};
-    OneClockUpState one_clock_up {ctx};
-    OneClockDownState one_clock_down {ctx};
-    DiceState dice {ctx};
+    StartupState startup {g_ctx};
+    MenuState menu {g_ctx};
+    ModesState modes {g_ctx};
+    TimeState time {g_ctx};
+    PreTimeState pre_time {g_ctx};
+    DecisecondsState deciseconds {g_ctx};
+    TwoClockUpState two_clock_up {g_ctx};
+    TwoClockDownState two_clock_down {g_ctx};
+    OneClockUpState one_clock_up {g_ctx};  // FIXME progress bar not working
+    OneClockDownState one_clock_down {g_ctx};
+    DiceState dice {g_ctx};
 
-    ctx.add_state(startup);
-    ctx.add_state(menu);
-    ctx.add_state(modes);
-    ctx.add_state(time);
-    ctx.add_state(pre_time);
-    ctx.add_state(deciseconds);
-    ctx.add_state(two_clock_up);
-    ctx.add_state(two_clock_down);
-    ctx.add_state(one_clock_up);
-    ctx.add_state(one_clock_down);
-    ctx.add_state(dice);
+    g_ctx.add_state(startup);
+    g_ctx.add_state(menu);
+    g_ctx.add_state(modes);
+    g_ctx.add_state(time);
+    g_ctx.add_state(pre_time);
+    g_ctx.add_state(deciseconds);
+    g_ctx.add_state(two_clock_up);
+    g_ctx.add_state(two_clock_down);
+    g_ctx.add_state(one_clock_up);
+    g_ctx.add_state(one_clock_down);
+    g_ctx.add_state(dice);
 
-    ctx.add_button(BUTTON_LEFT_PLAYER);
-    ctx.add_button(BUTTON_RIGHT_PLAYER);
-    ctx.add_button(BUTTON_START_STOP);
-    ctx.add_button(BUTTON_SOFT_RESET);
-    ctx.add_button(BUTTON_OK);
+    g_ctx.add_button(BUTTON_LEFT_PLAYER);
+    g_ctx.add_button(BUTTON_RIGHT_PLAYER);
+    g_ctx.add_button(BUTTON_START_STOP);
+    g_ctx.add_button(BUTTON_SOFT_RESET);
+    g_ctx.add_button(BUTTON_OK);
 
-    ctx.initialize(startup, setup_lcd, &data);
+    g_ctx.initialize(startup, setup_lcd, &g_data);
 
     pinMode(BUZZER, OUTPUT);
     pinMode(LED_LEFT, OUTPUT);
@@ -64,5 +64,5 @@ void setup()
 
 void loop()
 {
-    ctx.update();
+    g_ctx.update();
 }

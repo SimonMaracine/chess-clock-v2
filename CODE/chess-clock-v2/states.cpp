@@ -892,6 +892,8 @@ void DiceState::start()
         case ModeDiceTwo:
             data.dice_count = 2;
             break;
+        default:
+            break;
     }
 }
 
